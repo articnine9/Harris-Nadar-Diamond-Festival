@@ -1,0 +1,32 @@
+:root {
+  --ink: #060c11;
+  --pool: #0b2a33;
+  --pearl: #efe7da;
+  --gold: #c9a66b;
+  --mist: #93a6aa;
+  --line: rgba(239, 231, 218, 0.14);
+  --glass: rgba(8, 18, 24, 0.62);
+  --display: var(--font-display), "Didot", Georgia, serif;
+  --body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  --mono: var(--font-mono), ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--pearl);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

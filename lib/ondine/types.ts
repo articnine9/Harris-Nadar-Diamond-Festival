@@ -49,6 +49,8 @@ export type PhotoSet = {
     src: string;
     /** Where the subject sits, used to frame the wide shot on narrow screens. */
     subject: Norm;
+    /** Horizontal point to centre the wide shot on wider screens. Default 0.5. */
+    frameX?: number;
     /** Where each product's jewel sits in the wide photo. */
     points: [Norm, Norm, Norm];
   };

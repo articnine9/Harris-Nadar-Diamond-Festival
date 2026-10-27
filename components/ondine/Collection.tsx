@@ -58,7 +58,7 @@ export function Collection({ photos }: { photos?: PhotoSet }) {
     <section className={styles.collection} id="collection">
       <div className={styles.wrap}>
         <div className={styles.head}>
-          <h2>Nocturne collection</h2>
+          <h2>Festival collection</h2>
           <p>Every piece is BIS hallmarked, comes with its grading certificate, and is resized free for the first year.</p>
         </div>
         <div className={styles.grid}>

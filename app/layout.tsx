@@ -8,7 +8,7 @@ const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variabl
 
 export const metadata: Metadata = {
   title: "Harris Nadar Diamond Festival",
-  description: "The Diamond Festival at D. Harris Nadar Diamonds & Jewellery: pearl drops, an aquamarine pendant and an oval diamond solitaire in 18K gold and platinum.",
+  description: "The Diamond Festival at D. Harris Nadar Diamonds & Jewellery: cascading drop earrings, a stone-set lotus pendant and a gold filigree butterfly ring.",
 };
 
 export const viewport: Viewport = {

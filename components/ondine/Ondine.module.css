@@ -5,7 +5,9 @@
   padding-block: 18px;
   padding-left: max(24px, env(safe-area-inset-left, 0px));
   padding-right: max(24px, env(safe-area-inset-right, 0px));
-  background: linear-gradient(to bottom, rgba(6, 12, 17, 0.75), rgba(6, 12, 17, 0));
+  /* Dark band so the light logo, menu and bag stay readable over light photos too. */
+  background: linear-gradient(to bottom, rgba(6, 12, 17, 0.82) 0%, rgba(6, 12, 17, 0.6) 55%, rgba(6, 12, 17, 0) 100%);
+  padding-bottom: 30px;
 }
 .logoLink { display: grid; line-height: 0; }
 .logoLink > * { grid-area: 1 / 1; }
@@ -22,9 +24,9 @@
 .footerBrand { display: grid; gap: 12px; justify-items: start; }
 .footerLogo { display: block; height: 34px; width: auto; }
 .brand { font-family: var(--display); font-size: 20px; letter-spacing: 0.32em; text-decoration: none; }
-.nav { display: flex; gap: 28px; margin-left: auto; margin-right: 12px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); }
+.nav { display: flex; gap: 28px; margin-left: auto; margin-right: 12px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pearl); }
 .nav a { text-decoration: none; }
-.nav a:hover { color: var(--pearl); }
+.nav a:hover { color: var(--gold); }
 .bag {
   background: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px;
   font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; display: flex; gap: 8px; align-items: center;
@@ -61,18 +63,37 @@
   left: max(24px, env(safe-area-inset-left, 0px)); right: max(24px, env(safe-area-inset-right, 0px));
 }
 /* Photo mode: the model sits left, so the title takes the open water on the right. */
-.hero[data-align="right"] { left: auto; width: min(600px, 46vw); }
+.hero[data-align="right"] { left: auto; width: min(560px, 40vw); }
 .hero[data-align="right"] h1 { font-size: clamp(44px, 5.4vw, 88px); letter-spacing: 0.02em; }
 .hero h1 i { display: block; color: var(--gold); }
 /* Soft shade behind the title so it stays readable over the moonlit water; fades out with the hero. */
-.hero[data-align="right"] { isolation: isolate; }
+/* Photo mode, desktop: the title sits on the photo's light studio backdrop, so it uses dark ink.
+   (Phones keep light text over the dark fade at the bottom; see the 720px query.) */
+.hero[data-align="right"] { --hero-ink: #1c1915; --hero-gold: #6b4c1f; --hero-muted: #241f1a; --hero-label: #2a1d0b; isolation: isolate; }
+/* A soft cream veil lifts the mid-tone beige behind the text so dark ink reads clearly. */
 .hero[data-align="right"]::before {
-  content: ""; position: absolute; inset: -18% -14% -16% -18%; z-index: -1; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(6, 12, 17, 0.72), rgba(6, 12, 17, 0.35) 60%, rgba(6, 12, 17, 0));
+  content: ""; position: absolute; z-index: -1; inset: -40% -22% -40% -28%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(243, 236, 224, 0.85), rgba(243, 236, 224, 0.66) 45%, rgba(243, 236, 224, 0.28) 75%, rgba(243, 236, 224, 0));
 }
-.hero[data-align="right"] h1 { text-shadow: 0 2px 30px rgba(6, 12, 17, 0.55); }
-.scrim { position: absolute; inset: auto 0 0 0; height: 55%; pointer-events: none;
-  background: linear-gradient(to top, rgba(6, 12, 17, 0.85), rgba(6, 12, 17, 0)); display: none; }
+.hero[data-align="right"] h1 { color: var(--hero-ink); }
+.hero[data-align="right"] h1 i { color: var(--hero-gold); }
+.hero[data-align="right"] p, .hero[data-align="right"] .cue { color: var(--hero-muted); }
+.hero[data-align="right"] .eyebrow { color: var(--hero-label); }
+.hero[data-align="right"] .cue span { background: var(--hero-gold); }
+
+.finale[data-align="right"] {
+  place-content: center end; justify-items: start; text-align: left;
+  padding-inline: 24px max(48px, 6vw);
+  background: radial-gradient(34% 50% at 80% 50%, rgba(243, 236, 224, 0.8), rgba(243, 236, 224, 0.5) 55%, rgba(243, 236, 224, 0));
+}
+.finale[data-align="right"] h2 { color: #1c1915; max-width: 13ch; }
+.finale[data-align="right"] h2 i { color: #6b4c1f; }
+.finale[data-align="right"] .eyebrow { color: #3a2a12; }
+.finale[data-align="right"] .ghost { border-color: #1c1915; color: #1c1915; }
+.finale[data-align="right"] .ghost:hover { background: #1c1915; color: #f3f0ea; }
+/* Phones: dark fade under the title. Strong enough for light photos (white clothing at the bottom). */
+.scrim { position: absolute; inset: auto 0 0 0; height: 70%; pointer-events: none;
+  background: linear-gradient(to top, rgba(6, 12, 17, 0.94) 0%, rgba(6, 12, 17, 0.84) 45%, rgba(6, 12, 17, 0)); display: none; }
 .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
 .hero h1 {
   font-family: var(--display); font-weight: 400; font-size: clamp(56px, 11vw, 148px);
@@ -89,8 +110,8 @@
   --paper: #f3f0ea;
   --paper-2: #e7e3dc;
   --ink-2: #15181a;
-  --muted: #8c8f8d;
-  --teal: #1f9db0;
+  --muted: #5f6360;
+  --teal: #137482;
   --rule: rgba(21, 24, 26, 0.12);
   position: absolute; z-index: 5;
   top: 10px; bottom: 10px; right: 0;
@@ -130,10 +151,14 @@
 }
 .mediaNum, .mediaTag {
   position: absolute; z-index: 1; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: rgba(255, 250, 240, 0.9); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase; color: #f6f1e8;
+  /* Pill behind the label so it reads on light and dark photos alike. */
+  background: rgba(10, 12, 14, 0.66); padding: 5px 9px; border-radius: 6px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  max-width: calc(100% - 32px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.mediaNum { top: 14px; right: 16px; }
-.mediaTag { left: 16px; bottom: 14px; }
+.mediaNum { top: 12px; right: 12px; }
+.mediaTag { left: 12px; bottom: 12px; }
 .drawerSpecs { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .drawerSpecs div { display: grid; gap: 6px; align-content: start; min-width: 0; }
 .drawerSpecs dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
@@ -182,8 +207,11 @@
 
 .rail {
   position: absolute; left: max(24px, env(safe-area-inset-left, 0px)); top: 50%; transform: translateY(-50%);
-  list-style: none; margin: 0; padding: 0; display: grid; gap: 14px;
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(147, 166, 170, 0.55);
+  list-style: none; margin: 0; display: grid; gap: 14px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #c8c1b4;
+  /* Glass panel so the list reads over any photo, light or dark. */
+  padding: 16px 18px; border-radius: 14px;
+  background: rgba(6, 12, 17, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .rail { opacity: 0; transition: opacity 0.2s; }
 .rail li { display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
@@ -240,7 +268,14 @@
   .nav, .rail { display: none; }
   .hero[data-align="right"] { left: max(24px, env(safe-area-inset-left, 0px)); width: auto; }
   .hero[data-align="right"] h1 { font-size: clamp(40px, 11vw, 60px); }
+  /* Phones: light text over the dark fade at the bottom of the photo. */
+  .hero[data-align="right"] { --hero-ink: var(--pearl); --hero-gold: var(--gold); --hero-muted: #d9d2c5; --hero-label: #dcc08e; }
   .hero[data-align="right"]::before { display: none; }
+  .finale[data-align="right"] { place-content: end start; padding: 0 24px calc(14svh + env(safe-area-inset-bottom, 0px)); background: none; }
+  .finale[data-align="right"] h2 { color: var(--pearl); }
+  .finale[data-align="right"] h2 i { color: var(--gold); }
+  .finale[data-align="right"] .eyebrow { color: var(--pearl); }
+  .finale[data-align="right"] .ghost { border-color: var(--pearl); color: var(--pearl); }
   .logo { height: 30px; }
   .scrim { display: block; }
   /* Phones: the drawer becomes a full-screen sheet with a sliver of the photo on the left. */

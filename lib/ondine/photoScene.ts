@@ -9,6 +9,10 @@
  *   through and dissolves back into the travelling wide shot.
  * - A light motion blur is applied while the camera is deep into the wide photo,
  *   which hides the upscaling and sells the movement (Chrome / Firefox / Edge).
+ * - Wide banner photos (wider than the screen) open at full width on desktop instead of
+ *   being cropped to fill the height. The photo is pinned to the top; the space below is
+ *   filled by stretching its bottom edge downward and blurring it, so it reads as the photo
+ *   continuing, and the photo's bottom edge is feathered into that extension.
  */
 import type { Norm, PhotoSet, Point } from "./types";
 import { clamp, easeInOutCubic, interpolate, lerp, type Keyframes } from "./camera";
@@ -24,8 +28,18 @@ export const CLOSE_WINDOWS: [number, number, number, number][] = [
   [0.6, 0.66, 0.77, 0.8],
 ];
 
-function wideKeys(set: PhotoSet, narrow: boolean): Keyframes {
-  const W = { x: narrow ? set.wide.subject.x : 0.5, y: 0.5, z: 1 };
+/**
+ * Zoom (relative to cover-fit) at which the wide photo exactly fits the screen width.
+ * 1 when the photo is not wider than the screen, or on phones (where it always fills).
+ */
+function fitZoom(img: HTMLImageElement, W: number, H: number, narrow: boolean) {
+  if (narrow) return 1;
+  const cover = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+  return Math.min(1, W / img.naturalWidth / cover);
+}
+
+function wideKeys(set: PhotoSet, narrow: boolean, startZoom: number): Keyframes {
+  const W = { x: narrow ? set.wide.subject.x : (set.wide.frameX ?? 0.5), y: 0.5, z: startZoom };
   const [e, p, r] = set.wide.points.map((pt, i) => ({ x: pt.x, y: pt.y, z: WIDE_ZOOM[i] }));
   return [
     [0, W], [0.08, W],
@@ -38,17 +52,90 @@ function wideKeys(set: PhotoSet, narrow: boolean): Keyframes {
 
 type Rect = { x: number; y: number; w: number; h: number };
 
-/** Cover-fit an image at a zoom, putting `pt` on `focus` without ever exposing an edge. */
-function place(c: CanvasRenderingContext2D, img: HTMLImageElement, W: number, H: number, pt: Norm, zoom: number, focus: Point, alpha: number): Rect {
+/**
+ * Lay out an image at a zoom (1 = cover-fit), putting `pt` on `focus` without exposing an edge.
+ * Below cover size it is centred horizontally and pinned to the top vertically.
+ */
+function layout(img: HTMLImageElement, W: number, H: number, pt: Norm, zoom: number, focus: Point): Rect {
   const s = Math.max(W / img.naturalWidth, H / img.naturalHeight) * zoom;
   const w = img.naturalWidth * s;
   const h = img.naturalHeight * s;
-  const x = clamp(focus.x - pt.x * w, W - w, 0);
-  const y = clamp(focus.y - pt.y * h, H - h, 0);
-  c.globalAlpha = alpha;
-  c.drawImage(img, x, y, w, h);
-  c.globalAlpha = 1;
+  const x = w >= W ? clamp(focus.x - pt.x * w, W - w, 0) : (W - w) / 2;
+  const y = h >= H ? clamp(focus.y - pt.y * h, H - h, 0) : 0;
   return { x, y, w, h };
+}
+
+function place(c: CanvasRenderingContext2D, img: CanvasImageSource & { naturalWidth: number; naturalHeight: number }, W: number, H: number, pt: Norm, zoom: number, focus: Point, alpha: number): Rect {
+  const r = layout(img as HTMLImageElement, W, H, pt, zoom, focus);
+  c.globalAlpha = alpha;
+  c.drawImage(img, r.x, r.y, r.w, r.h);
+  c.globalAlpha = 1;
+  return r;
+}
+
+/* ---- Cached helpers for the full-width desktop opening ---- */
+
+const feathered = new WeakMap<HTMLImageElement, HTMLCanvasElement>();
+/** The image with its bottom 28% faded to transparent, made once per image. */
+function featheredCopy(img: HTMLImageElement) {
+  let cv = feathered.get(img);
+  if (cv) return cv;
+  cv = document.createElement("canvas");
+  cv.width = img.naturalWidth;
+  cv.height = img.naturalHeight;
+  const x = cv.getContext("2d")!;
+  x.drawImage(img, 0, 0);
+  x.globalCompositeOperation = "destination-in";
+  const g = x.createLinearGradient(0, 0, 0, cv.height);
+  g.addColorStop(0, "rgba(0,0,0,1)");
+  g.addColorStop(0.72, "rgba(0,0,0,1)");
+  g.addColorStop(1, "rgba(0,0,0,0)");
+  x.fillStyle = g;
+  x.fillRect(0, 0, cv.width, cv.height);
+  feathered.set(img, cv);
+  return cv;
+}
+
+let backdrop: { img: HTMLImageElement; key: string; cv: HTMLCanvasElement } | null = null;
+/**
+ * The photo at full width pinned to the top, with its bottom rows stretched down to the
+ * bottom of the screen, then blurred (drawn tiny and scaled back up, which works in every
+ * browser). Cached per screen size.
+ */
+function extendedBackdrop(img: HTMLImageElement, W: number, H: number) {
+  const key = `${Math.round(W)}x${Math.round(H)}`;
+  if (backdrop && backdrop.img === img && backdrop.key === key) return backdrop.cv;
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const fitH = (W / iw) * ih;
+  const sharp = document.createElement("canvas");
+  sharp.width = Math.max(1, Math.round(W));
+  sharp.height = Math.max(1, Math.round(H));
+  const s = sharp.getContext("2d")!;
+  s.drawImage(img, 0, 0, W, fitH);
+  // stretch the bottom 12% of the photo down into the gap (averages out detail), then blur hard
+  const band = Math.round(ih * 0.12);
+  s.drawImage(img, 0, ih - band, iw, band, 0, fitH - 1, W, Math.max(1, H - fitH + 1));
+  const tiny = document.createElement("canvas");
+  tiny.width = 12;
+  tiny.height = Math.max(1, Math.round((64 * H) / W));
+  const t = tiny.getContext("2d")!;
+  t.imageSmoothingQuality = "high";
+  t.drawImage(sharp, 0, 0, tiny.width, tiny.height);
+  const cv = document.createElement("canvas");
+  cv.width = sharp.width;
+  cv.height = sharp.height;
+  const x = cv.getContext("2d")!;
+  x.imageSmoothingEnabled = true;
+  x.imageSmoothingQuality = "high";
+  x.drawImage(tiny, 0, 0, W, H);
+  // settle the extension slightly darker towards the bottom of the screen
+  const g = x.createLinearGradient(0, fitH, 0, H);
+  g.addColorStop(0, "rgba(40,30,20,0)");
+  g.addColorStop(1, "rgba(40,30,20,0.28)");
+  x.fillStyle = g;
+  x.fillRect(0, fitH, W, H - fitH);
+  backdrop = { img, key, cv };
+  return cv;
 }
 
 export type PhotoRenderOptions = {
@@ -78,12 +165,27 @@ export function renderPhotos(c: CanvasRenderingContext2D, o: PhotoRenderOptions)
   const breathe = 1 + 0.012 * Math.sin(time * 0.35);
 
   // Wide camera
-  const cam = interpolate(wideKeys(set, narrow), p);
+  const fit = fitZoom(wide, W, H, narrow);
+  const cam = interpolate(wideKeys(set, narrow, fit), p);
   const tz = clamp((cam.z - 1) / 1.6);
   const f = { x: lerp(W / 2, focal.x, tz), y: lerp(H / 2, focal.y, tz) };
+  const zoom = cam.z * (fit < 1 ? 1 : breathe);
+  const r = layout(wide, W, H, { x: cam.x, y: cam.y }, zoom, f);
+
+  // Opening on desktop: photo at full width, pinned to the top, blurred extension below.
+  // The sharp un-feathered photo fades back in as the camera pushes past screen height.
+  const solid = clamp((r.h / H - 1) / 0.2);
+  if (solid < 1) {
+    c.drawImage(extendedBackdrop(wide, W, H), 0, 0, W, H);
+    c.drawImage(featheredCopy(wide), r.x, r.y, r.w, r.h);
+  }
   const blur = clamp((cam.z - 1.4) / 1.2) * 5;
   if (blur > 0.3) c.filter = `blur(${blur.toFixed(1)}px)`;
-  place(c, wide, W, H, { x: cam.x, y: cam.y }, cam.z * breathe, f, 1);
+  if (solid > 0) {
+    c.globalAlpha = solid;
+    c.drawImage(wide, r.x, r.y, r.w, r.h);
+    c.globalAlpha = 1;
+  }
   c.filter = "none";
 
   // Close-ups

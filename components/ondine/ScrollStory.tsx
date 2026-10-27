@@ -149,9 +149,9 @@ export function ScrollStory({ images, mode }: Props) {
         {mode.kind === "photos" && <div className={styles.scrim} />}
 
         <div className={styles.hero} ref={heroRef} data-align={mode.kind === "photos" ? "right" : "left"}>
-          <div className={styles.eyebrow}>Collection Nº 1 · Nocturne</div>
+          <div className={styles.eyebrow}>The Festival Collection</div>
           <h1>Harris Nadar <i>Diamond Festival</i></h1>
-          <p>Three pieces of fine jewellery, set in 18K gold and platinum, made to catch the light of a pool at night.</p>
+          <p>Three pieces from the festival collection: cascading drop earrings, a stone-set pendant and a gold filigree ring.</p>
           <div className={styles.cue}><span />Scroll to dive in</div>
         </div>
 
@@ -172,9 +172,9 @@ export function ScrollStory({ images, mode }: Props) {
           />
         ))}
 
-        <div className={styles.finale} ref={finaleRef} data-on="false">
+        <div className={styles.finale} ref={finaleRef} data-on="false" data-align={mode.kind === "photos" ? "right" : "center"}>
           <div className={styles.eyebrow}>Fin</div>
-          <h2>The whole night, in <i>three pieces.</i></h2>
+          <h2>The whole festival, in <i>three pieces.</i></h2>
           <a className={styles.ghost} href="#collection">View the collection</a>
         </div>
 

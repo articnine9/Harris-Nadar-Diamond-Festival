@@ -11,7 +11,7 @@ import styles from "./Ondine.module.css";
  */
 const OFFER_TITLE = "Unlock Your Diamond Festival Offer";
 const OFFER_LINE = "Book a showroom visit and get an exclusive festival offer on diamond jewellery";
-const IMAGE = { src: "/photos/festival-01.webp", position: "50% 48%" };
+const IMAGE = { src: "/photos/festival-01.webp", position: "50% 18%" }; // face and drop earring
 const INTERESTS = ["Diamond Earrings", "Diamond Necklaces & Pendants", "Diamond Rings", "Bridal Diamond Sets"];
 const SLOTS = ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"];
 
@@ -27,6 +27,7 @@ type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; name: str
 export function OfferPopup({ ready }: { ready: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [hasDate, setHasDate] = useState(false);
   useDialogScrollLock(ref);
 
   // Opens on every page load, once the loading screen has finished.
@@ -60,6 +61,7 @@ export function OfferPopup({ ready }: { ready: boolean }) {
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || "Could not send your details. Please try again.");
       form.reset();
+      setHasDate(false);
       setStatus({ kind: "sent", name: payload.name.split(" ")[0] });
     } catch (err) {
       setStatus({ kind: "error", message: err instanceof Error ? err.message : "Could not send your details. Please try again." });
@@ -93,8 +95,12 @@ export function OfferPopup({ ready }: { ready: boolean }) {
             <input className={styles.offerInput} id="offer-phone" name="phone" type="tel" placeholder="Mobile Number *" aria-label="Mobile number"
               required autoComplete="tel" inputMode="tel" pattern="[+0-9 ()-]{10,16}" maxLength={16}
               title="10-digit mobile number, with country code if outside India" />
-            <input className={styles.offerInput} id="offer-date" name="visitDate" type="date" aria-label="Visit date"
-              required min={today()} />
+            {/* Phones show an empty date input as a blank box, so draw our own placeholder over it. */}
+            <div className={styles.offerDate}>
+              <input className={styles.offerInput} id="offer-date" name="visitDate" type="date" aria-label="Visit date"
+                required min={today()} onChange={(e) => setHasDate(Boolean(e.target.value))} />
+              {!hasDate && <span className={styles.offerDateHint} aria-hidden="true">Select Date *</span>}
+            </div>
             <select className={styles.offerInput} id="offer-time" name="visitTime" aria-label="Visit time" required defaultValue="">
               <option value="" disabled>Select Time *</option>
               {SLOTS.map((s) => <option key={s}>{s}</option>)}

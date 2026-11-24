@@ -2,7 +2,7 @@ import type { PhotoSet } from "./types";
 
 /**
  * The four Diamond Festival photos in /public/photos (WebP, from the shoot's DSC JPEGs).
- *   01 opening shot, 2880 × 3836 portrait (DSC05307)
+ *   01 opening shot, 3504 × 2632 (DSC05147: side profile wearing the Cascade drop earring)
  *   03 earring, 02 pendant, 04 ring: 2632 × 3504 portrait (DSC05158, DSC05209, DSC05318)
  * Coordinates are 0–1 fractions of each image, measured from the photos themselves.
  * If you swap in new photos, update these points so the camera lands on the jewel.
@@ -10,14 +10,14 @@ import type { PhotoSet } from "./types";
 export const PHOTOS: PhotoSet = {
   wide: {
     src: "/photos/festival-01.webp",
-    subject: { x: 0.52, y: 0.42 },
+    subject: { x: 0.5, y: 0.45 },
     frameX: 0.5,
-    // Portrait photo: desktop screens show a horizontal band, so keep the face and choker in it.
-    frameY: 0.42,
+    // 4:3 photo: desktop screens trim top and bottom; keep the face, earring and necklace in view.
+    frameY: 0.45,
     points: [
-      { x: 0.70, y: 0.31 }, // earring
-      { x: 0.547, y: 0.547 }, // choker centre stone
-      { x: 0.28, y: 0.387 }, // ring
+      { x: 0.624, y: 0.473 }, // drop earring
+      { x: 0.5, y: 0.858 }, // necklace ruby
+      { x: 0.687, y: 0.836 }, // ring
     ],
   },
   closeups: [

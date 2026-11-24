@@ -345,6 +345,20 @@
   background: #fff; border: 1px solid var(--o-line); border-radius: 8px; padding: 0 14px;
 }
 .offerInput::placeholder { color: #8a8178; }
+/* Date field: iOS/Android collapse an empty date input and ignore its height unless the native look is reset. */
+.offerDate { position: relative; }
+.offerDate input[type="date"] {
+  -webkit-appearance: none; appearance: none; display: block; min-height: 46px; line-height: 44px; text-align: left;
+}
+.offerDate input[type="date"]::-webkit-date-and-time-value { text-align: left; min-height: 1.2em; }
+.offerDateHint {
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;
+  font-size: 15px; color: #8a8178; background: #fff; padding-right: 8px;
+}
+/* Desktop browsers already show dd-mm-yyyy, so the hint only covers the blank box phones show. */
+@media (hover: hover) and (pointer: fine) {
+  .offerDateHint { display: none; }
+}
 select.offerInput:invalid { color: #8a8178; }
 .offerInput option { color: var(--o-ink); }
 .offerInput:focus { outline: none; border-color: var(--o-gold); box-shadow: 0 0 0 3px rgba(176, 129, 61, 0.18); }

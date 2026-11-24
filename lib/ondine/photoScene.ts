@@ -39,7 +39,7 @@ function fitZoom(img: HTMLImageElement, W: number, H: number, narrow: boolean) {
 }
 
 function wideKeys(set: PhotoSet, narrow: boolean, startZoom: number): Keyframes {
-  const W = { x: narrow ? set.wide.subject.x : (set.wide.frameX ?? 0.5), y: 0.5, z: startZoom };
+  const W = { x: narrow ? set.wide.subject.x : (set.wide.frameX ?? 0.5), y: set.wide.frameY ?? 0.5, z: startZoom };
   const [e, p, r] = set.wide.points.map((pt, i) => ({ x: pt.x, y: pt.y, z: WIDE_ZOOM[i] }));
   return [
     [0, W], [0.08, W],

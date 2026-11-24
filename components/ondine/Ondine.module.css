@@ -14,24 +14,17 @@
 .logo { display: block; height: 38px; width: auto; transition: opacity 0.3s; }
 .logoDark { opacity: 0; }
 .top { transition: background 0.3s; }
-.nav, .bag { transition: color 0.3s, border-color 0.3s; }
+.nav { transition: color 0.3s; }
 :global(html[data-drawer="open"]) .top { background: transparent; }
 :global(html[data-drawer="open"]) .nav { color: #5d625f; }
 :global(html[data-drawer="open"]) .nav a:hover { color: #15181a; }
-:global(html[data-drawer="open"]) .bag { color: #15181a; border-color: rgba(21, 24, 26, 0.2); }
-:global(html[data-drawer="open"]) .bag b { color: #9a7436; }
 .loaderLogo { display: block; width: min(240px, 70%); height: auto; }
 .footerBrand { display: grid; gap: 12px; justify-items: start; }
 .footerLogo { display: block; height: 34px; width: auto; }
 .brand { font-family: var(--display); font-size: 20px; letter-spacing: 0.32em; text-decoration: none; }
-.nav { display: flex; gap: 28px; margin-left: auto; margin-right: 12px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pearl); }
+.nav { display: flex; gap: 28px; margin-left: auto; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pearl); }
 .nav a { text-decoration: none; }
 .nav a:hover { color: var(--gold); }
-.bag {
-  background: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px;
-  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; display: flex; gap: 8px; align-items: center;
-}
-.bag b { font-family: var(--mono); font-weight: 500; color: var(--gold); font-variant-numeric: tabular-nums; }
 
 /* ---------- Preloader ---------- */
 .loader {
@@ -67,14 +60,16 @@
 .hero[data-align="right"] h1 { font-size: clamp(44px, 5.4vw, 88px); letter-spacing: 0.02em; }
 .hero h1 i { display: block; color: var(--gold); }
 /* Soft shade behind the title so it stays readable over the moonlit water; fades out with the hero. */
-/* Photo mode, desktop: the title sits on the photo's light studio backdrop, so it uses dark ink.
-   (Phones keep light text over the dark fade at the bottom; see the 720px query.) */
-.hero[data-align="right"] { --hero-ink: #1c1915; --hero-gold: #6b4c1f; --hero-muted: #241f1a; --hero-label: #2a1d0b; isolation: isolate; }
-/* A soft cream veil lifts the mid-tone beige behind the text so dark ink reads clearly. */
+/* Photo mode, desktop: the title sits over the dress and choker (dark, busy), so it uses light text.
+   (Phones get the same light text over the dark fade at the bottom; see the 720px query.) */
+.hero[data-align="right"] { --hero-ink: var(--pearl); --hero-gold: #e0bd7f; --hero-muted: #e6ded1; --hero-label: #e0c48f; isolation: isolate; }
+/* A soft dark veil calms the jewellery highlights behind the text so light type reads clearly. */
 .hero[data-align="right"]::before {
-  content: ""; position: absolute; z-index: -1; inset: -40% -22% -40% -28%; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(243, 236, 224, 0.85), rgba(243, 236, 224, 0.66) 45%, rgba(243, 236, 224, 0.28) 75%, rgba(243, 236, 224, 0));
+  content: ""; position: absolute; z-index: -1; inset: -30% -22% -30% -28%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(6, 12, 17, 0.86), rgba(6, 12, 17, 0.74) 55%, rgba(6, 12, 17, 0.32) 80%, rgba(6, 12, 17, 0));
 }
+.hero[data-align="right"] h1, .hero[data-align="right"] p { text-shadow: 0 1px 12px rgba(6, 12, 17, 0.55); }
+.hero[data-align="right"] p { font-weight: 500; text-shadow: 0 1px 3px rgba(6, 12, 17, 0.9), 0 0 14px rgba(6, 12, 17, 0.7); }
 .hero[data-align="right"] h1 { color: var(--hero-ink); }
 .hero[data-align="right"] h1 i { color: var(--hero-gold); }
 .hero[data-align="right"] p, .hero[data-align="right"] .cue { color: var(--hero-muted); }
@@ -84,13 +79,13 @@
 .finale[data-align="right"] {
   place-content: center end; justify-items: start; text-align: left;
   padding-inline: 24px max(48px, 6vw);
-  background: radial-gradient(34% 50% at 80% 50%, rgba(243, 236, 224, 0.8), rgba(243, 236, 224, 0.5) 55%, rgba(243, 236, 224, 0));
+  background: radial-gradient(34% 50% at 80% 50%, rgba(6, 12, 17, 0.78), rgba(6, 12, 17, 0.55) 55%, rgba(6, 12, 17, 0));
 }
-.finale[data-align="right"] h2 { color: #1c1915; max-width: 13ch; }
-.finale[data-align="right"] h2 i { color: #6b4c1f; }
-.finale[data-align="right"] .eyebrow { color: #3a2a12; }
-.finale[data-align="right"] .ghost { border-color: #1c1915; color: #1c1915; }
-.finale[data-align="right"] .ghost:hover { background: #1c1915; color: #f3f0ea; }
+.finale[data-align="right"] h2 { color: var(--pearl); max-width: 13ch; text-shadow: 0 1px 12px rgba(6, 12, 17, 0.55); }
+.finale[data-align="right"] h2 i { color: #e0bd7f; }
+.finale[data-align="right"] .eyebrow { color: #e0c48f; }
+.finale[data-align="right"] .ghost { border-color: var(--pearl); color: var(--pearl); }
+.finale[data-align="right"] .ghost:hover { background: var(--pearl); color: var(--ink); }
 /* Phones: dark fade under the title. Strong enough for light photos (white clothing at the bottom). */
 .scrim { position: absolute; inset: auto 0 0 0; height: 70%; pointer-events: none;
   background: linear-gradient(to top, rgba(6, 12, 17, 0.94) 0%, rgba(6, 12, 17, 0.84) 45%, rgba(6, 12, 17, 0)); display: none; }
@@ -174,26 +169,8 @@
 }
 .pill:hover { background: #2b3033; }
 .pill:active { transform: scale(0.98); }
-.stepper { display: flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 14px; color: var(--ink-2); }
-.stepper button {
-  width: 32px; height: 32px; border-radius: 999px; border: 1px solid transparent; background: none;
-  color: var(--ink-2); font-size: 16px; line-height: 1;
-}
-.stepper button:hover:not(:disabled) { border-color: var(--rule); }
-.stepper button:disabled { color: var(--muted); opacity: 0.5; cursor: default; }
-.stepper output { min-width: 18px; text-align: center; font-variant-numeric: tabular-nums; }
-.drawerPrice {
-  margin-left: auto; font-family: var(--display); font-size: clamp(26px, 2.4vw, 36px);
-  font-variant-numeric: tabular-nums; color: var(--ink-2);
-}
+.drawerNote { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .drawer :focus-visible { outline-color: var(--teal); }
-
-.price { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; }
-.add {
-  background: var(--pearl); color: var(--ink); border: 0; padding: 10px 18px;
-  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; transition: background 0.2s;
-}
-.add:hover { background: var(--gold); }
 
 .finale {
   position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
@@ -235,8 +212,57 @@
 .piece h3 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 0; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .piece small { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--mist); text-transform: uppercase; }
-.addGhost { background: none; color: var(--pearl); border: 1px solid var(--line); }
-.addGhost:hover { border-color: var(--gold); color: var(--gold); background: none; }
+.enquire {
+  background: none; color: var(--pearl); border: 1px solid var(--line); padding: 10px 18px; flex: none;
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+  transition: border-color 0.2s, color 0.2s;
+}
+.enquire:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ---------- Enquiry popup ---------- */
+.enquiry {
+  width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; margin: auto;
+  border: 1px solid var(--line); border-radius: 18px; background: #0b141a; color: var(--pearl);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6); overflow: hidden;
+}
+.enquiry::backdrop { background: rgba(3, 7, 10, 0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.enquiry[open] { animation: enquiryIn 0.28s ease-out; }
+@keyframes enquiryIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.enquiryInner { position: relative; max-height: calc(100dvh - 26px); overflow-y: auto; padding: 36px clamp(20px, 5vw, 40px) 32px; }
+.enquiryClose {
+  position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 999px;
+  background: none; border: 1px solid var(--line); color: var(--pearl); font-size: 22px; line-height: 1;
+}
+.enquiryClose:hover { border-color: var(--gold); color: var(--gold); }
+.enquiryForm, .enquiryDone { display: grid; gap: 18px; }
+.enquiryHead { display: grid; gap: 10px; padding-right: 40px; }
+.enquiry h2 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 6vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+.enquiry p { margin: 0; color: #c4ccc9; font-size: 14.5px; line-height: 1.6; max-width: 46ch; }
+.fieldRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { display: grid; gap: 7px; min-width: 0; }
+.field > span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.field em { font-style: normal; color: var(--mist); letter-spacing: 0.08em; text-transform: none; }
+.field input, .field select, .field textarea {
+  width: 100%; min-width: 0; font: inherit; font-size: 15px; color: var(--pearl);
+  background: rgba(239, 231, 218, 0.05); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.field textarea { resize: vertical; min-height: 84px; }
+.field select option { background: #0b141a; color: var(--pearl); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); background: rgba(239, 231, 218, 0.08); }
+.field input:user-invalid { border-color: #e0896b; }
+.enquiryError { color: #f0a58a !important; font-size: 14px; }
+.enquirySubmit {
+  justify-self: start; background: var(--pearl); color: var(--ink); border: 0; border-radius: 999px;
+  padding: 15px 30px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  transition: background 0.2s;
+}
+.enquirySubmit:hover:not(:disabled) { background: var(--gold); }
+.enquirySubmit:disabled { opacity: 0.6; cursor: progress; }
+@media (max-width: 520px) {
+  .fieldRow { grid-template-columns: 1fr; }
+  .enquirySubmit { justify-self: stretch; }
+}
 
 /* ---------- Footer ---------- */
 .footer {
@@ -247,15 +273,6 @@
 .footer .brand { color: var(--pearl); font-size: 16px; }
 .hall { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
 
-/* ---------- Toast ---------- */
-.toast {
-  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 70;
-  transform: translate(-50%, 20px); background: var(--pearl); color: var(--ink);
-  padding: 10px 18px; font-size: 13px; opacity: 0; transition: 0.3s; pointer-events: none;
-}
-.toastShow { opacity: 1; transform: translate(-50%, 0); }
-.toast { width: max-content; max-width: calc(100vw - 32px); text-align: center; }
-:global(html[data-drawer="open"]) .toast { background: #15181a; color: #f3f0ea; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
@@ -287,12 +304,7 @@
   .drawerSpecs { gap: 10px; }
   .drawerSpecs dd { font-size: 12.5px; }
   .drawerBuy { gap: 10px; padding-top: 14px; }
-  /* Price + quantity on one row, a full-width button below. */
-  .drawerBuy { display: grid; grid-template-columns: 1fr auto; align-items: center; row-gap: 12px; }
-  .drawerPrice { order: 1; margin-left: 0; font-size: 28px; white-space: nowrap; }
-  .stepper { order: 2; }
-  .pill { order: 3; grid-column: 1 / -1; width: 100%; padding: 15px 22px; }
-  :global(html[data-drawer="open"]) .toast { top: calc(76px + env(safe-area-inset-top, 0px)); bottom: auto; }
+  .pill { width: 100%; padding: 15px 22px; }
   :global(html[data-drawer="open"]) .logo:not(.logoDark) { opacity: 0; }
   :global(html[data-drawer="open"]) .logoDark { opacity: 1; }
 }
@@ -302,5 +314,50 @@
 @media (prefers-reduced-motion: reduce) {
   .cue span { animation: none; transform: none; }
   .loaderBar span { transition: none; }
-  .top, .nav, .bag, .logo { transition: none; }
+  .top, .nav, .logo { transition: none; }
 }
+
+/* ---------- Offer popup (opens after the loading screen) ---------- */
+.offer {
+  --o-paper: #fbf8f3; --o-ink: #1d1a17; --o-muted: #6a625a; --o-line: #ddd3c6;
+  --o-title: #8c1d2c; --o-gold: #b0813d; --o-gold-dark: #946a2e;
+  width: min(500px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; margin: auto;
+  border: 1px solid var(--o-line); border-radius: 16px; background: var(--o-paper); color: var(--o-ink);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55); overflow: hidden;
+  color-scheme: light; /* native checkboxes, date picker and select menu in light style */
+}
+.offer::backdrop { background: rgba(3, 7, 10, 0.66); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.offer[open] { animation: enquiryIn 0.32s ease-out; }
+.offerInner { position: relative; max-height: calc(100dvh - 26px); overflow-y: auto; padding: 22px 22px 24px; display: grid; gap: 18px; }
+.offerClose {
+  position: absolute; top: 8px; right: 10px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 999px;
+  background: rgba(251, 248, 243, 0.92); color: var(--o-ink); font-size: 24px; line-height: 1;
+}
+.offerClose:hover { color: var(--o-title); }
+.offerImage { position: relative; aspect-ratio: 2.45 / 1; border-radius: 10px; overflow: hidden; background: #2a2420; margin-top: 18px; }
+.offerForm, .offerDone { display: grid; gap: 12px; }
+.offerHead { display: grid; gap: 6px; text-align: center; margin-bottom: 4px; }
+.offer h2 { font-family: var(--display); font-weight: 400; color: var(--o-title); font-size: clamp(22px, 5vw, 27px); line-height: 1.15; margin: 0; text-wrap: balance; }
+.offer p { margin: 0; color: var(--o-muted); font-size: 13.5px; line-height: 1.5; text-wrap: balance; }
+.offerDone { text-align: center; }
+.offerInput {
+  width: 100%; min-width: 0; height: 46px; font: inherit; font-size: 15px; color: var(--o-ink);
+  background: #fff; border: 1px solid var(--o-line); border-radius: 8px; padding: 0 14px;
+}
+.offerInput::placeholder { color: #8a8178; }
+select.offerInput:invalid { color: #8a8178; }
+.offerInput option { color: var(--o-ink); }
+.offerInput:focus { outline: none; border-color: var(--o-gold); box-shadow: 0 0 0 3px rgba(176, 129, 61, 0.18); }
+.offerInput:user-invalid { border-color: #c4553f; }
+.offerChecks { border: 0; margin: 2px 0 0; padding: 0; display: grid; gap: 10px; }
+.offerChecks label { display: flex; align-items: center; gap: 10px; font-size: 14.5px; color: var(--o-ink); cursor: pointer; }
+.offerChecks input { width: 16px; height: 16px; margin: 0; accent-color: var(--o-gold); flex: none; }
+.offerError { color: #b13a26 !important; text-align: center; }
+.offerSubmit {
+  width: 100%; height: 50px; margin-top: 4px; border: 0; border-radius: 999px; background: var(--o-gold); color: #fff;
+  font: inherit; font-size: 15.5px; font-weight: 600; letter-spacing: 0.02em; transition: background 0.2s;
+}
+.offerSubmit:hover:not(:disabled) { background: var(--o-gold-dark); }
+.offerSubmit:disabled { opacity: 0.7; cursor: progress; }
+.offer :focus-visible { outline: 2px solid var(--o-gold); outline-offset: 2px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, type Ref } from "react";
+import type { Ref } from "react";
 import Image from "next/image";
-import { formatPrice } from "@/lib/ondine/products";
 import type { PhotoShot, Product } from "@/lib/ondine/types";
-import { useBag } from "./BagContext";
+import { useEnquiry } from "./Enquiry";
 import styles from "./Ondine.module.css";
 
 type Props = {
@@ -20,11 +19,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * Full-height white product drawer. ScrollStory slides it in and out by setting
- * its transform; this component only renders content and holds the quantity.
+ * its transform; this component only renders content.
  */
 export function ProductDrawer({ product: p, index, total, shot, ref }: Props) {
-  const { add } = useBag();
-  const [qty, setQty] = useState(1);
+  const { open } = useEnquiry();
   const [lead] = p.specs;
   const tag = `${lead[0]} · ${lead[1].split(",")[0]}`;
 
@@ -68,15 +66,10 @@ export function ProductDrawer({ product: p, index, total, shot, ref }: Props) {
         </dl>
 
         <div className={styles.drawerBuy}>
-          <button className={styles.pill} type="button" onClick={() => add(`${p.name} ${p.accent}`, qty)}>
-            Add to bag
+          <button className={styles.pill} type="button" onClick={() => open(`${p.name} ${p.accent}`)}>
+            Enquire
           </button>
-          <div className={styles.stepper} role="group" aria-label="Quantity">
-            <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1}>−</button>
-            <output aria-live="polite">{qty}</output>
-            <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(9, q + 1))} disabled={qty >= 9}>+</button>
-          </div>
-          <span className={styles.drawerPrice}>{formatPrice(p.price * qty)}</span>
+          <span className={styles.drawerNote}>Price on request · private viewing by appointment</span>
         </div>
       </div>
     </article>

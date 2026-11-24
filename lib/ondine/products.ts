@@ -2,8 +2,9 @@ import type { Product } from "./types";
 
 /*
  * Product copy is written from what is visible in the festival photos (01–04).
- * Names, specs and prices are PLACEHOLDERS: replace with the store's real
- * product names, metal purity, stone details and prices before launch.
+ * Names and specs are PLACEHOLDERS: replace with the store's real
+ * product names, metal purity and stone details before launch.
+ * Prices are not shown on the site; visitors enquire instead.
  */
 export const PRODUCTS: Product[] = [
   {
@@ -19,7 +20,6 @@ export const PRODUCTS: Product[] = [
       ["Metal", "Yellow and white gold"],
       ["Finish", "Polished and diamond-cut"],
     ],
-    price: 184000,
     focus: { x: 503, y: 364, z: 7.5 },
     band: [0.19, 0.32],
   },
@@ -36,7 +36,6 @@ export const PRODUCTS: Product[] = [
       ["Halo", "White stones, hexagon"],
       ["Chain", "Yellow gold, cable link"],
     ],
-    price: 246000,
     focus: { x: 588, y: 524, z: 6.5 },
     band: [0.42, 0.55],
   },
@@ -53,11 +52,7 @@ export const PRODUCTS: Product[] = [
       ["Metal", "Yellow and white gold"],
       ["Finish", "Textured, diamond-cut"],
     ],
-    price: 690000,
     focus: { x: 768, y: 748, z: 8 },
     band: [0.65, 0.78],
   },
 ];
-
-const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
-export const formatPrice = (rupees: number) => inr.format(rupees);

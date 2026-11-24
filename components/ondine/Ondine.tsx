@@ -5,9 +5,10 @@ import Image from "next/image";
 import { useAssetPreloader } from "@/lib/ondine/useAssetPreloader";
 import { photoUrls } from "@/lib/ondine/photos";
 import type { FrameSource, PhotoSet, StoryMode } from "@/lib/ondine/types";
-import { BagProvider } from "./BagContext";
+import { EnquiryProvider } from "./Enquiry";
 import { Collection } from "./Collection";
 import { Header } from "./Header";
+import { OfferPopup } from "./OfferPopup";
 import { Preloader } from "./Preloader";
 import { ScrollStory } from "./ScrollStory";
 import styles from "./Ondine.module.css";
@@ -41,8 +42,9 @@ export default function Ondine({ photos, frames }: Props) {
   const unit = mode.kind === "frames" ? "Frames" : mode.kind === "photos" ? "Photographs" : undefined;
 
   return (
-    <BagProvider>
+    <EnquiryProvider>
       <Preloader {...preload} unit={unit} />
+      <OfferPopup ready={preload.done} />
       <Header />
       <main>
         <ScrollStory images={preload.images} mode={mode} />
@@ -57,6 +59,6 @@ export default function Ondine({ photos, frames }: Props) {
           <div className={styles.hall}>BIS Hallmark · 750 / 950 · GIA certified</div>
         </div>
       </footer>
-    </BagProvider>
+    </EnquiryProvider>
   );
 }

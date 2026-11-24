@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { PRODUCTS, formatPrice } from "@/lib/ondine/products";
+import { PRODUCTS } from "@/lib/ondine/products";
 import { renderScene } from "@/lib/ondine/scene";
 import type { PhotoSet, PhotoShot, Product } from "@/lib/ondine/types";
-import { useBag } from "./BagContext";
+import { useEnquiry } from "./Enquiry";
 import styles from "./Ondine.module.css";
 
 /** Close-up photo, cropped so the jewel stays in frame at any card width. */
@@ -53,7 +53,7 @@ function DrawnThumb({ product, index }: { product: Product; index: number }) {
 }
 
 export function Collection({ photos }: { photos?: PhotoSet }) {
-  const { add } = useBag();
+  const { open } = useEnquiry();
   return (
     <section className={styles.collection} id="collection">
       <div className={styles.wrap}>
@@ -65,13 +65,10 @@ export function Collection({ photos }: { photos?: PhotoSet }) {
           {PRODUCTS.map((p, i) => (
             <article key={p.id} className={styles.piece}>
               {photos ? <PhotoThumb product={p} shot={photos.closeups[i]} /> : <DrawnThumb product={p} index={i} />}
-              <div className={styles.row}>
-                <h3>{p.name} {p.accent}</h3>
-                <span className={styles.price}>{formatPrice(p.price)}</span>
-              </div>
+              <h3>{p.name} {p.accent}</h3>
               <div className={styles.row}>
                 <small>{p.short}</small>
-                <button className={`${styles.add} ${styles.addGhost}`} type="button" onClick={() => add(`${p.name} ${p.accent}`)}>Add</button>
+                <button className={styles.enquire} type="button" onClick={() => open(`${p.name} ${p.accent}`)}>Enquire</button>
               </div>
             </article>
           ))}

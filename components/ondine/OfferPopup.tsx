@@ -1,0 +1,123 @@
+"use client";
+
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
+import { useDialogScrollLock } from "./Enquiry";
+import styles from "./Ondine.module.css";
+
+/*
+ * Offer popup shown on every page load, right after the loading screen.
+ * The offer line is deliberately generic (no discount figure); edit OFFER_LINE if a specific offer is announced.
+ */
+const OFFER_TITLE = "Unlock Your Diamond Festival Offer";
+const OFFER_LINE = "Book a showroom visit and get an exclusive festival offer on diamond jewellery";
+const IMAGE = { src: "/photos/festival-01.webp", position: "50% 48%" };
+const INTERESTS = ["Diamond Earrings", "Diamond Necklaces & Pendants", "Diamond Rings", "Bridal Diamond Sets"];
+const SLOTS = ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"];
+
+const OPEN_DELAY_MS = 900; // lets the loading screen fade out first
+
+const today = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+
+type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; name: string } | { kind: "error"; message: string };
+
+export function OfferPopup({ ready }: { ready: boolean }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  useDialogScrollLock(ref);
+
+  // Opens on every page load, once the loading screen has finished.
+  useEffect(() => {
+    if (!ready) return;
+    const t = setTimeout(() => {
+      const d = ref.current;
+      if (d && !d.open) d.showModal();
+    }, OPEN_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [ready]);
+
+  const close = () => ref.current?.close();
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = {
+      type: "offer",
+      piece: "Festival offer",
+      name: String(fd.get("name") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
+      visitDate: String(fd.get("visitDate") ?? ""),
+      visitTime: String(fd.get("visitTime") ?? ""),
+      interests: fd.getAll("interests").map(String),
+    };
+    setStatus({ kind: "sending" });
+    try {
+      const res = await fetch("/api/enquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || "Could not send your details. Please try again.");
+      form.reset();
+      setStatus({ kind: "sent", name: payload.name.split(" ")[0] });
+    } catch (err) {
+      setStatus({ kind: "error", message: err instanceof Error ? err.message : "Could not send your details. Please try again." });
+    }
+  }
+
+  return (
+    <dialog ref={ref} className={styles.offer} aria-labelledby="offer-title" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
+      <div className={styles.offerInner}>
+        <button className={styles.offerClose} type="button" onClick={close} aria-label="Close">×</button>
+
+        <div className={styles.offerImage}>
+          <Image src={IMAGE.src} alt="" fill sizes="(max-width: 560px) 92vw, 480px" style={{ objectFit: "cover", objectPosition: IMAGE.position }} />
+        </div>
+
+        {status.kind === "sent" ? (
+          <div className={styles.offerDone} role="status">
+            <h2 id="offer-title">Your offer is unlocked, {status.name}.</h2>
+            <p>Our showroom team will call you to confirm your visit and share the offer details.</p>
+            <button className={styles.offerSubmit} type="button" onClick={close}>Continue to the festival</button>
+          </div>
+        ) : (
+          <form className={styles.offerForm} onSubmit={submit}>
+            <div className={styles.offerHead}>
+              <h2 id="offer-title">{OFFER_TITLE}</h2>
+              <p>{OFFER_LINE}</p>
+            </div>
+
+            <input className={styles.offerInput} id="offer-name" name="name" placeholder="Your Name *" aria-label="Your name"
+              required autoComplete="name" maxLength={80} />
+            <input className={styles.offerInput} id="offer-phone" name="phone" type="tel" placeholder="Mobile Number *" aria-label="Mobile number"
+              required autoComplete="tel" inputMode="tel" pattern="[+0-9 ()-]{10,16}" maxLength={16}
+              title="10-digit mobile number, with country code if outside India" />
+            <input className={styles.offerInput} id="offer-date" name="visitDate" type="date" aria-label="Visit date"
+              required min={today()} />
+            <select className={styles.offerInput} id="offer-time" name="visitTime" aria-label="Visit time" required defaultValue="">
+              <option value="" disabled>Select Time *</option>
+              {SLOTS.map((s) => <option key={s}>{s}</option>)}
+            </select>
+
+            <fieldset className={styles.offerChecks}>
+              <legend className={styles.srOnly}>Interested in</legend>
+              {INTERESTS.map((label, i) => (
+                <label key={label}>
+                  <input type="checkbox" id={`offer-interest-${i}`} name="interests" value={label} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </fieldset>
+
+            {status.kind === "error" && <p className={styles.offerError} role="alert">{status.message}</p>}
+
+            <button className={styles.offerSubmit} type="submit" disabled={status.kind === "sending"}>
+              {status.kind === "sending" ? "Sending…" : "Unlock Offer"}
+            </button>
+          </form>
+        )}
+      </div>
+    </dialog>
+  );
+}

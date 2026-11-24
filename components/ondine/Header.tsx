@@ -1,11 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useBag } from "./BagContext";
 import styles from "./Ondine.module.css";
 
 export function Header() {
-  const { count } = useBag();
   return (
     <header className={styles.top}>
       <a className={styles.logoLink} href="#" aria-label="D. Harris Nadar Diamonds & Jewellery, home">
@@ -16,11 +14,7 @@ export function Header() {
       <nav className={styles.nav} aria-label="Main">
         <a href="#story">The Story</a>
         <a href="#collection">Collection</a>
-        <a href="#atelier">Atelier</a>
       </nav>
-      <button className={styles.bag} type="button" aria-label={`Bag, ${count} items`}>
-        Bag <b>{count}</b>
-      </button>
     </header>
   );
 }

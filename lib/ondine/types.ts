@@ -24,8 +24,6 @@ export type Product = {
   blurb: string;
   short: string;
   specs: [label: string, value: string][];
-  /** Price in rupees. */
-  price: number;
   /** Where the camera lands for this piece. */
   focus: Camera;
   /** Scroll progress window (0–1) where the card is visible. */
@@ -51,6 +49,8 @@ export type PhotoSet = {
     subject: Norm;
     /** Horizontal point to centre the wide shot on wider screens. Default 0.5. */
     frameX?: number;
+    /** Vertical point to centre the opening frame on (portrait photos crop top and bottom). Default 0.5. */
+    frameY?: number;
     /** Where each product's jewel sits in the wide photo. */
     points: [Norm, Norm, Norm];
   };

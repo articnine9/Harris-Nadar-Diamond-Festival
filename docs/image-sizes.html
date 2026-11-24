@@ -1,0 +1,265 @@
+<title>Diamond Festival Image Sizes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column spec sheet — summary table first, then one block per site section, then unused files. */
+:root {
+  --bg: #f4f1ec;
+  --panel: #ffffff;
+  --fg: #12181d;
+  --muted: #5b6268;
+  --line: #ddd6ca;
+  --gold: #8a6a33;
+  --gold-soft: #f1e6d1;
+  --warn: #9a4b14;
+  --warn-soft: #f7e3d3;
+  --ok: #2f6b4a;
+  --ok-soft: #dcefe3;
+  --display: "Bodoni Moda", Didot, Georgia, serif;
+  --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #060c11; --panel: #0d161d; --fg: #efe7da; --muted: #98a2a8; --line: #22303a;
+    --gold: #c9a66b; --gold-soft: #2a2216; --warn: #e9a06b; --warn-soft: #2f1d10; --ok: #7fc79d; --ok-soft: #12261b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #060c11; --panel: #0d161d; --fg: #efe7da; --muted: #98a2a8; --line: #22303a;
+  --gold: #c9a66b; --gold-soft: #2a2216; --warn: #e9a06b; --warn-soft: #2f1d10; --ok: #7fc79d; --ok-soft: #12261b;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.page {
+  max-width: 1080px; margin: 0 auto; display: grid; gap: 56px;
+  padding-block: 48px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 54px); line-height: 1.05; margin: 8px 0 14px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); font-size: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+code, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code { font-size: 0.88em; }
+
+section { display: grid; gap: 20px; min-width: 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num { white-space: nowrap; }
+td strong { font-weight: 600; }
+.export { color: var(--gold); font-weight: 500; }
+.chip { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.sub { display: block; color: var(--muted); font-size: 12px; }
+
+.blocks { display: grid; gap: 18px; }
+.block { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; padding: 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.shape { display: grid; place-items: center; align-content: center; gap: 8px; min-height: 120px; }
+.box { border: 1px solid var(--gold); background: var(--gold-soft); max-width: 100%; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; color: var(--gold); }
+.shape small { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.body { display: grid; gap: 12px; min-width: 0; }
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px 20px; margin: 0; }
+.specs div { display: grid; gap: 2px; }
+.specs dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.specs dd { margin: 0; font-family: var(--mono); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.note { font-size: 14px; color: var(--muted); }
+.note.warn { color: var(--warn); }
+ul.files { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; }
+ul.files li { display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: space-between; border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+.rules { display: grid; gap: 8px; margin: 0; padding-left: 20px; font-size: 14.5px; max-width: 72ch; }
+@media (max-width: 640px) {
+  .block { grid-template-columns: 1fr; gap: 16px; }
+  .shape { min-height: 0; justify-items: start; }
+}
+</style>
+
+<div class="page">
+  <header>
+    <div class="eyebrow">D. Harris Nadar · Diamond Festival site</div>
+    <h1>Image sizes by section</h1>
+    <p class="lede">Every image on the festival page, how big it shows on screen, the file it uses today, and the size to export when you supply a replacement. Displayed sizes were measured in the running site.</p>
+    <div class="meta">
+      <span>Desktop: 1440 × 900 viewport</span>
+      <span>Mobile: 375 × 812 viewport</span>
+      <span>Export sizes are 2× the largest box (for retina screens)</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="sum">
+    <h2 id="sum">Summary</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Shape</th>
+            <th>Shown on desktop</th>
+            <th>Shown on mobile</th>
+            <th>Current file</th>
+            <th>Export at</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Header logo</strong><span class="sub">light + dark versions</span></td>
+            <td class="num">≈ 6 : 1</td>
+            <td class="num">227 × 38</td>
+            <td class="num">179 × 30</td>
+            <td class="num">1368 × 229 PNG</td>
+            <td class="num export">≥ 456 × 76<span class="sub">SVG preferred</span></td>
+            <td><span class="chip ok">OK</span></td>
+          </tr>
+          <tr>
+            <td><strong>Preloader logo</strong></td>
+            <td class="num">≈ 6 : 1</td>
+            <td class="num">240 × 40</td>
+            <td class="num">240 × 40</td>
+            <td class="num">1368 × 229 PNG</td>
+            <td class="num export">≥ 480 × 80</td>
+            <td><span class="chip ok">OK</span></td>
+          </tr>
+          <tr>
+            <td><strong>Scroll story · wide shot</strong><span class="sub">full-screen hero</span></td>
+            <td class="num">2.4 : 1</td>
+            <td class="num">1425 × 900<span class="sub">fills screen, sides cropped</span></td>
+            <td class="num">375 × 812<span class="sub">tall crop of the centre-left</span></td>
+            <td class="num">1920 × 800 WebP</td>
+            <td class="num export">3840 × 1600</td>
+            <td><span class="chip warn">Too small</span></td>
+          </tr>
+          <tr>
+            <td><strong>Scroll story · 3 close-ups</strong><span class="sub">earring, pendant, ring</span></td>
+            <td class="num">2.4 : 1</td>
+            <td class="num">1425 × 900</td>
+            <td class="num">375 × 812</td>
+            <td class="num">1920 × 800 WebP</td>
+            <td class="num export">3840 × 1600</td>
+            <td><span class="chip warn">Too small</span></td>
+          </tr>
+          <tr>
+            <td><strong>Product drawer photo</strong><span class="sub">same 3 close-up files</span></td>
+            <td class="num">≈ 5 : 3 desktop<span class="sub">≈ 1 : 1 mobile</span></td>
+            <td class="num">572 × 340</td>
+            <td class="num">321 × 312</td>
+            <td class="num">1920 × 800 WebP</td>
+            <td class="num export">1200 × 720</td>
+            <td><span class="chip ok">OK</span></td>
+          </tr>
+          <tr>
+            <td><strong>Collection cards</strong><span class="sub">3 products</span></td>
+            <td class="num">4 : 5</td>
+            <td class="num">373 × 466</td>
+            <td class="num">325 × 407<span class="sub">up to 480 × 600 on tablet</span></td>
+            <td class="num">1920 × 800 WebP<span class="sub">only 640 × 800 used</span></td>
+            <td class="num export">1000 × 1250</td>
+            <td><span class="chip warn">Soft on retina</span></td>
+          </tr>
+          <tr>
+            <td><strong>Footer logo</strong></td>
+            <td class="num">≈ 6 : 1</td>
+            <td class="num">203 × 34</td>
+            <td class="num">203 × 34</td>
+            <td class="num">1368 × 229 PNG</td>
+            <td class="num export">≥ 406 × 68</td>
+            <td><span class="chip ok">OK</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="detail">
+    <h2 id="detail">Section by section</h2>
+    <div class="blocks">
+
+      <article class="block">
+        <div class="shape"><div class="box" style="width:150px;height:25px">6 : 1</div><small>logo</small></div>
+        <div class="body">
+          <h3>Logos: header, preloader, footer</h3>
+          <dl class="specs">
+            <div><dt>Files</dt><dd>logo-light.png, logo-dark.png</dd></div>
+            <div><dt>Current size</dt><dd>1368 × 229 px · 92 KB</dd></div>
+            <div><dt>Shown height</dt><dd>38 px header · 34 px footer · 30 px mobile</dd></div>
+          </dl>
+          <p class="note">The current files are more than sharp enough. The header swaps to the dark logo when a product drawer opens, so both versions need the same size and padding. An SVG of the logo would be the cleanest replacement.</p>
+        </div>
+      </article>
+
+      <article class="block">
+        <div class="shape"><div class="box" style="width:168px;height:70px">2.4 : 1</div><small>wide + close-ups</small></div>
+        <div class="body">
+          <h3>Scroll story (full-screen photos)</h3>
+          <dl class="specs">
+            <div><dt>Files</dt><dd>festival-01 (wide), -03, -02, -04 (.webp)</dd></div>
+            <div><dt>Current size</dt><dd>1920 × 800 px · 40–73 KB each</dd></div>
+            <div><dt>Export at</dt><dd>3840 × 1600 px, 2.4 : 1</dd></div>
+            <div><dt>Minimum</dt><dd>2880 × 1200 px</dd></div>
+          </dl>
+          <p class="note warn">The photos are scaled up today. On a 1440 × 900 screen the 800 px tall file is stretched to 900 px, and the camera then zooms in further on each jewel, so the close-ups look soft.</p>
+          <p class="note">Keep all four at exactly 2.4 : 1. Desktop screens crop the left and right edges; phones show only a tall slice, so keep the model and the jewellery in the left-centre third of the frame. If the framing changes, the jewel coordinates in <code>lib/ondine/photos.ts</code> must be updated so the camera still lands on each piece.</p>
+        </div>
+      </article>
+
+      <article class="block">
+        <div class="shape"><div class="box" style="width:150px;height:90px">5 : 3</div><small>drawer photo</small></div>
+        <div class="body">
+          <h3>Product drawers (Cascade, Lotus, Papillon)</h3>
+          <dl class="specs">
+            <div><dt>Files</dt><dd>Same as the 3 close-ups</dd></div>
+            <div><dt>Box</dt><dd>572 × 340 desktop · 321 × 312 mobile</dd></div>
+            <div><dt>Height</dt><dd>150 – 340 px, flexes</dd></div>
+          </dl>
+          <p class="note">No separate file is needed. The box is cropped from the close-up around the jewel, and the 3840 × 1600 export above covers it.</p>
+        </div>
+      </article>
+
+      <article class="block">
+        <div class="shape"><div class="box" style="width:80px;height:100px">4 : 5</div><small>product card</small></div>
+        <div class="body">
+          <h3>Festival collection cards</h3>
+          <dl class="specs">
+            <div><dt>Files</dt><dd>Same as the 3 close-ups</dd></div>
+            <div><dt>Box</dt><dd>373 × 466 desktop · 325 × 407 mobile</dd></div>
+            <div><dt>Largest</dt><dd>480 × 600 (tablet, single column)</dd></div>
+            <div><dt>Export at</dt><dd>1000 × 1250 px, 4 : 5</dd></div>
+          </dl>
+          <p class="note warn">The portrait card takes a narrow slice of a wide photo, so only about 640 × 800 px of the file is used. That is below 2× for the 480 × 600 tablet card.</p>
+          <p class="note">Ask for a dedicated 4 : 5 portrait crop of each piece at 1000 × 1250 px. Using separate card files needs a small code change; until then, a 3840 × 1600 close-up gives about 1280 × 1600 usable pixels here, which is also enough.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="rules">
+    <h2 id="rules">Export rules for the team</h2>
+    <ol class="rules">
+      <li>Export photos as WebP, quality about 80. Aim for under 300 KB at 3840 × 1600.</li>
+      <li>Keep the original high-resolution masters (JPEG or PNG) outside <code>public/</code>; only the web exports go on the site.</li>
+      <li>Name replacements the same as the current files (<code>festival-01.webp</code> to <code>-04</code>) so no code changes are needed.</li>
+      <li>Order: 01 wide shot, 02 pendant, 03 earring, 04 ring.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="unused">
+    <h2 id="unused">Files in the project the site does not use</h2>
+    <ul class="files">
+      <li><code>public/photos/01–04.jpg.jpeg</code><span class="num">1920 × 800 · 376–580 KB · source JPEGs</span></li>
+      <li><code>public/photos/earring, pendant, ring, poolside-wide.webp</code><span class="num">1672 × 941 · 82–114 KB</span></li>
+      <li><code>public/logo.jpg</code><span class="num">720 × 140 · 42 KB</span></li>
+      <li><code>images/*.png</code> (4 files)<span class="num">1672 × 941 · 1.8–1.9 MB each</span></li>
+    </ul>
+    <p class="note">The files in <code>public/</code> are still published with the site. They can be removed or moved out of <code>public/</code>.</p>
+  </section>
+</div>

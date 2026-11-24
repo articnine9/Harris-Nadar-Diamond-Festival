@@ -1,27 +1,29 @@
 import type { PhotoSet } from "./types";
 
 /**
- * The four Diamond Festival photos in /public/photos (1920 × 800 WebP, made from 01–04.jpg).
- *   01 wide shot · 03 earring · 02 pendant · 04 ring
+ * The four Diamond Festival photos in /public/photos (WebP, from the shoot's DSC JPEGs).
+ *   01 opening shot, 2880 × 3836 portrait (DSC05307)
+ *   03 earring, 02 pendant, 04 ring: 2632 × 3504 portrait (DSC05158, DSC05209, DSC05318)
  * Coordinates are 0–1 fractions of each image, measured from the photos themselves.
  * If you swap in new photos, update these points so the camera lands on the jewel.
  */
 export const PHOTOS: PhotoSet = {
   wide: {
     src: "/photos/festival-01.webp",
-    subject: { x: 0.3, y: 0.45 },
-    // The photo is 2.4:1, so a desktop screen crops the sides; keep the model on the left.
-    frameX: 0.34,
+    subject: { x: 0.52, y: 0.42 },
+    frameX: 0.5,
+    // Portrait photo: desktop screens show a horizontal band, so keep the face and choker in it.
+    frameY: 0.42,
     points: [
-      { x: 0.206, y: 0.52 }, // drop earring
-      { x: 0.269, y: 0.89 }, // necklace
-      { x: 0.443, y: 0.76 }, // ring
+      { x: 0.70, y: 0.31 }, // earring
+      { x: 0.547, y: 0.547 }, // choker centre stone
+      { x: 0.28, y: 0.387 }, // ring
     ],
   },
   closeups: [
-    { src: "/photos/festival-03.webp", focus: { x: 0.193, y: 0.625 }, glint: { x: 0.198, y: 0.369 } },
-    { src: "/photos/festival-02.webp", focus: { x: 0.213, y: 0.74 }, glint: { x: 0.21, y: 0.68 } },
-    { src: "/photos/festival-04.webp", focus: { x: 0.193, y: 0.45 }, glint: { x: 0.185, y: 0.41 } },
+    { src: "/photos/festival-03.webp", focus: { x: 0.567, y: 0.37 }, glint: { x: 0.565, y: 0.3 } },
+    { src: "/photos/festival-02.webp", focus: { x: 0.52, y: 0.58 }, glint: { x: 0.54, y: 0.54 } },
+    { src: "/photos/festival-04.webp", focus: { x: 0.382, y: 0.494 }, glint: { x: 0.37, y: 0.48 } },
   ],
 };
 

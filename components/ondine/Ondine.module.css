@@ -1,6 +1,6 @@
 /* ---------- Header ---------- */
 .top {
-  position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 50;
+  position: fixed; top: calc(var(--bar-h) + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 50;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding-block: 18px;
   padding-left: max(24px, env(safe-area-inset-left, 0px));
@@ -43,7 +43,7 @@
 .loaderNote { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mist); font-variant-numeric: tabular-nums; }
 
 /* ---------- Story ---------- */
-.story { position: relative; height: 900svh; }
+.story { position: relative; height: 560svh; }
 .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .vignette {
@@ -55,21 +55,27 @@
   position: absolute; bottom: 12svh; display: grid; gap: 14px; max-width: 640px; pointer-events: none;
   left: max(24px, env(safe-area-inset-left, 0px)); right: max(24px, env(safe-area-inset-right, 0px));
 }
-/* Photo mode: the model sits left, so the title takes the open water on the right. */
-.hero[data-align="right"] { left: auto; width: min(560px, 40vw); }
-.hero[data-align="right"] h1 { font-size: clamp(44px, 5.4vw, 88px); letter-spacing: 0.02em; }
-.hero h1 i { display: block; color: var(--gold); }
-/* Soft shade behind the title so it stays readable over the moonlit water; fades out with the hero. */
-/* Photo mode, desktop: the title sits over the dress and choker (dark, busy), so it uses light text.
-   (Phones get the same light text over the dark fade at the bottom; see the 720px query.) */
-.hero[data-align="right"] { --hero-ink: var(--pearl); --hero-gold: #e0bd7f; --hero-muted: #e6ded1; --hero-label: #e0c48f; isolation: isolate; }
-/* A soft dark veil calms the jewellery highlights behind the text so light type reads clearly. */
-.hero[data-align="right"]::before {
-  content: ""; position: absolute; z-index: -1; inset: -30% -22% -30% -28%; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(6, 12, 17, 0.86), rgba(6, 12, 17, 0.74) 55%, rgba(6, 12, 17, 0.32) 80%, rgba(6, 12, 17, 0));
+.heroMain, .heroSide { display: grid; gap: 14px; align-content: end; min-width: 0; }
+/* Photo mode: the face and the drop earring fill the top of the frame, so the copy sits in a
+   band along the bottom: date and title on the left, offer line and buttons on the right. */
+.hero[data-align="right"] {
+  --hero-gutter: max(24px, 4vw, env(safe-area-inset-left, 0px));
+  left: var(--hero-gutter); right: var(--hero-gutter); bottom: 7svh; max-width: none;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); column-gap: clamp(28px, 5vw, 80px); align-items: end;
+  --hero-ink: var(--pearl); --hero-gold: #e0bd7f; --hero-muted: #e6ded1; --hero-label: #e0c48f; isolation: isolate;
 }
-.hero[data-align="right"] h1, .hero[data-align="right"] p { text-shadow: 0 1px 12px rgba(6, 12, 17, 0.55); }
-.hero[data-align="right"] p { font-weight: 500; text-shadow: 0 1px 3px rgba(6, 12, 17, 0.9), 0 0 14px rgba(6, 12, 17, 0.7); }
+.hero[data-align="right"] h1 { font-size: clamp(38px, 5vw, 76px); line-height: 0.95; letter-spacing: 0.01em; max-width: 12ch; }
+.hero h1 i { display: block; color: var(--gold); }
+/* Dark fade from the bottom edge, fading out with the hero, so the type reads over the dress. */
+.hero[data-align="right"]::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: calc(-1 * var(--hero-gutter)); right: calc(-1 * var(--hero-gutter)); top: -55%; bottom: -7svh;
+  background: linear-gradient(to top, rgba(6, 12, 17, 0.92) 0%, rgba(6, 12, 17, 0.78) 38%, rgba(6, 12, 17, 0.35) 70%, rgba(6, 12, 17, 0));
+}
+.hero[data-align="right"] .heroSide { gap: 18px; padding-bottom: 6px; }
+/* Tablets: the narrower right column has no room for the scroll hint. */
+@media (max-width: 1100px) { .hero[data-align="right"] .cue { display: none; } }
+.hero[data-align="right"] p { font-size: 16px; line-height: 1.6; max-width: 40ch; text-shadow: 0 1px 3px rgba(6, 12, 17, 0.8); }
 .hero[data-align="right"] h1 { color: var(--hero-ink); }
 .hero[data-align="right"] h1 i { color: var(--hero-gold); }
 .hero[data-align="right"] p, .hero[data-align="right"] .cue { color: var(--hero-muted); }
@@ -99,6 +105,28 @@
 .cue { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mist); }
 .cue span { display: block; width: 44px; height: 1px; background: var(--gold); transform-origin: left; animation: cue 2.4s ease-in-out infinite; }
 @keyframes cue { 0%, 100% { transform: scaleX(0.25); } 50% { transform: scaleX(1); } }
+
+/* Festival date lockup, reminder chips and the two hero CTAs */
+.heroDate { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.heroDate strong {
+  font-family: var(--display); font-weight: 400; font-size: clamp(36px, 4vw, 58px);
+  line-height: 0.9; letter-spacing: 0.012em; color: var(--pearl);
+}
+.heroDate span {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold);
+}
+.heroActions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; pointer-events: auto; }
+.primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--gold); color: #171208; border: 0; border-radius: 999px; padding: 14px 26px;
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  font-weight: 600; text-decoration: none; transition: background 0.2s, transform 0.2s;
+}
+.primary:hover { background: #dcbd86; }
+.primary:active { transform: scale(0.98); }
+.finale p { margin: 0; max-width: 42ch; color: var(--mist); font-size: 15px; line-height: 1.6; }
+.finale[data-align="right"] p { color: #e6ded1; text-shadow: 0 1px 3px rgba(6, 12, 17, 0.9), 0 0 14px rgba(6, 12, 17, 0.7); }
 
 /* ---------- Product drawer (white, full height, slides in from the right) ---------- */
 .drawer {
@@ -140,6 +168,15 @@
 .drawerHead h2 i { font-style: italic; }
 .drawerMaterial { font-size: 14px; color: var(--ink-2); }
 .drawerBlurb { margin: 0; max-width: 52ch; font-size: 14.5px; line-height: 1.6; color: #5d625f; }
+.drawerOffer {
+  margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  padding: 12px 14px; border-radius: 10px; background: #f6ead7; color: #6b4e1f;
+  font-size: 13px; line-height: 1.4;
+}
+.drawerOffer span {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #8a621f;
+}
 .drawerMedia {
   position: relative; margin: 0; flex: 1 1 220px; min-height: 150px; max-height: 340px;
   border-radius: 16px; overflow: hidden; background: var(--paper-2);
@@ -199,16 +236,23 @@
 
 /* ---------- Collection ---------- */
 .collection {
-  padding-block: 120px 80px; border-top: 1px solid var(--line);
+  padding-block: 140px 80px; border-top: 1px solid var(--line);
   padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px));
 }
 .wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 48px; }
 .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+.headCopy { display: grid; gap: 10px; }
 .head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(38px, 5vw, 60px); line-height: 1; margin: 0; }
 .head p { margin: 0; max-width: 42ch; color: var(--mist); }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
 .piece { display: grid; gap: 14px; min-width: 0; }
 .thumb { position: relative; overflow: hidden; width: 100%; max-width: 100%; aspect-ratio: 4 / 5; display: block; border: 1px solid var(--line); background: var(--pool); }
+.thumbCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pieceOffer {
+  position: absolute; z-index: 1; left: 12px; top: 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #171208; background: var(--gold); padding: 5px 10px; border-radius: 999px;
+}
 .piece h3 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 0; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .piece small { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--mist); text-transform: uppercase; }
@@ -218,6 +262,130 @@
   transition: border-color 0.2s, color 0.2s;
 }
 .enquire:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ---------- Festival announcement bar ---------- */
+.festivalBar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 70;
+  background: #0a141a; box-shadow: inset 0 -1px 0 var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.festivalBarInner {
+  height: var(--bar-h); display: flex; align-items: center; gap: 14px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--pearl);
+}
+.festivalBarName { color: var(--gold); }
+.festivalBarDot { width: 3px; height: 3px; border-radius: 50%; background: var(--gold); flex: none; }
+.festivalBarDates { color: var(--mist); white-space: nowrap; }
+.festivalBarClock { margin-left: auto; color: var(--pearl); }
+.festivalBarClockShort { display: none; margin-left: auto; color: var(--pearl); }
+.festivalBarCta {
+  flex: none; background: var(--gold); color: #171208; border: 0; border-radius: 999px;
+  padding: 7px 14px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; font-weight: 600; transition: background 0.2s;
+}
+.festivalBarCta:hover { background: #dcbd86; }
+.clockText, .clockPending { font-variant-numeric: tabular-nums; }
+
+/* ---------- Offers ---------- */
+.offers {
+  padding-block: 130px 100px; border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, #08131a 0%, #0b1a20 100%);
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.offersWrap { gap: 40px; }
+.offersHead { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; }
+.offersHead h2 {
+  font-family: var(--display); font-weight: 400; font-size: clamp(36px, 4.6vw, 58px);
+  line-height: 1; margin: 10px 0 0; max-width: 17ch; text-wrap: balance;
+}
+.offersHead h2 i { color: var(--gold); font-style: italic; }
+.offersHead p { margin: 0; max-width: 36ch; color: var(--mist); font-size: 14.5px; line-height: 1.65; }
+.offerGrid {
+  list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.offerGrid li { background: #0a161d; padding: 26px 22px; display: grid; gap: 10px; align-content: start; }
+.offerNum { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; color: var(--gold); }
+.offerGrid h3 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.05; margin: 0; }
+.offerGrid p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #b9c7c8; }
+.offerGrid small {
+  margin-top: auto; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);
+}
+.offersFoot { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.offersFoot > span {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--mist);
+}
+
+/* ---------- Countdown band ---------- */
+.countdownBand {
+  padding-block: 140px 84px; border-top: 1px solid var(--line);
+  background: radial-gradient(90% 130% at 50% 0%, #123039 0%, #060c11 72%);
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.countdownInner { display: flex; justify-content: space-between; align-items: center; gap: 48px; flex-wrap: wrap; }
+.countdownCopy { display: grid; gap: 12px; max-width: 46ch; }
+.countdownCopy h2 {
+  font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.05; margin: 0; color: var(--pearl); text-wrap: balance;
+}
+.countdownCopy p { margin: 0; color: var(--mist); font-size: 14.5px; line-height: 1.6; }
+.countdownCap { color: var(--pearl) !important; }
+.countdownCopy .primary { justify-self: start; margin-top: 6px; }
+.clock { display: flex; gap: clamp(10px, 2vw, 24px); }
+.clockCell { display: grid; gap: 6px; justify-items: center; min-width: 64px; }
+.clockCell strong {
+  font-family: var(--display); font-weight: 400; font-size: clamp(38px, 5vw, 64px);
+  line-height: 1; color: var(--pearl); font-variant-numeric: tabular-nums;
+}
+.clockCell span {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold);
+}
+
+/* ---------- Visit ---------- */
+.visit {
+  padding-block: 140px 110px; border-top: 1px solid var(--line);
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.visitWrap { grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: start; }
+.visitIntro { display: grid; gap: 18px; align-content: start; }
+.visitIntro h2 {
+  font-family: var(--display); font-weight: 400; font-size: clamp(36px, 4.4vw, 56px);
+  line-height: 1.02; margin: 0; max-width: 15ch; text-wrap: balance;
+}
+.visitIntro h2 i { color: var(--gold); }
+.visitIntro p { margin: 0; max-width: 46ch; color: var(--mist); font-size: 15px; line-height: 1.65; }
+.visitActions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.visitFacts { margin: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.visitFacts div { background: #0a161d; padding: 20px 22px; display: grid; gap: 6px; }
+.visitFacts dt {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold);
+}
+.visitFacts dd { margin: 0; font-size: 16px; line-height: 1.4; }
+.visitFacts small { display: block; margin-top: 4px; font-size: 13px; color: var(--mist); }
+.visitFacts a { color: var(--pearl); text-decoration: none; border-bottom: 1px solid var(--line); }
+.visitFacts a:hover { color: var(--gold); border-color: var(--gold); }
+.visitExpect {
+  grid-column: 1 / -1; list-style: none; margin: 0; padding: 34px 0 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px;
+  border-top: 1px solid var(--line);
+}
+.visitExpect li { display: grid; gap: 6px; align-content: start; }
+.visitExpect h3 { font-family: var(--display); font-weight: 400; font-size: 25px; margin: 0; }
+.visitExpect p { margin: 0; color: var(--mist); font-size: 14px; line-height: 1.6; }
+
+/* ---------- Sticky booking bar (phones) ---------- */
+.stickyCta { display: none; }
 
 /* ---------- Enquiry popup ---------- */
 .enquiry {
@@ -271,20 +439,37 @@
 }
 .footerWrap { grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
 .footer .brand { color: var(--pearl); font-size: 16px; }
-.hall { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.hall { display: grid; gap: 6px; justify-items: end; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
 
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
   .nav { display: none; }
+  .offerGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; max-width: 480px; }
+  .visitWrap { grid-template-columns: 1fr; gap: 36px; }
 }
 @media (max-width: 720px) {
   .nav, .rail { display: none; }
-  .hero[data-align="right"] { left: max(24px, env(safe-area-inset-left, 0px)); width: auto; }
-  .hero[data-align="right"] h1 { font-size: clamp(40px, 11vw, 60px); }
+  .story { height: 520svh; }
+  .festivalBarInner { gap: 10px; font-size: 9.5px; letter-spacing: 0.12em; }
+  .festivalBarName, .festivalBarDot, .festivalBarClock { display: none; }
+  .festivalBarClockShort { display: inline; }
+  .festivalBarCta { margin-left: 0; padding: 6px 12px; font-size: 9.5px; }
+  .hero { gap: 10px; }
+  .hero > .eyebrow, .heroMain > .eyebrow { display: none; }
+  .hero p { font-size: 14px; }
+  .heroDate span { font-size: 10px; }
+  .hero[data-align="right"] { --hero-gutter: max(20px, env(safe-area-inset-left, 0px)); grid-template-columns: 1fr; row-gap: 14px; bottom: 9svh; }
+  .hero[data-align="right"] h1 { font-size: clamp(32px, 9.4vw, 46px); }
+  .hero[data-align="right"] p { font-size: 14px; }
+  .heroMain, .heroSide, .hero[data-align="right"] .heroSide { gap: 10px; }
+  .heroDate strong { font-size: clamp(30px, 8vw, 40px); }
+  .heroActions { gap: 10px; }
+  .heroActions .primary, .heroActions .ghost { padding: 12px 18px; font-size: 10.5px; }
+  .cue { display: none; }
   /* Phones: light text over the dark fade at the bottom of the photo. */
   .hero[data-align="right"] { --hero-ink: var(--pearl); --hero-gold: var(--gold); --hero-muted: #d9d2c5; --hero-label: #dcc08e; }
   .hero[data-align="right"]::before { display: none; }
@@ -295,9 +480,31 @@
   .finale[data-align="right"] .ghost { border-color: var(--pearl); color: var(--pearl); }
   .logo { height: 30px; }
   .scrim { display: block; }
+  .offers, .visit { padding-block: 120px 76px; }
+  .countdownBand { padding-block: 120px 70px; }
+  .collection { padding-block: 120px 70px; }
+  .offersHead { gap: 20px; }
+  .offersFoot { align-items: flex-start; flex-direction: column; }
+  .countdownInner { gap: 30px; }
+  .clock { flex-wrap: wrap; justify-content: flex-start; }
+  .clockCell { min-width: 56px; }
+  .visitExpect { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
+  .stickyCta {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(6, 12, 17, 0.94); border-top: 1px solid var(--line);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .stickyCta span {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--pearl); max-width: 52%;
+  }
+  .stickyCta .primary { padding: 10px 16px; font-size: 9.5px; letter-spacing: 0.14em; }
+  .footer { padding-bottom: calc(48px + 72px + env(safe-area-inset-bottom, 0px)); }
   /* Phones: the drawer becomes a full-screen sheet with a sliver of the photo on the left. */
   .drawer { width: calc(100% - 14px); top: 0; bottom: 0; border-radius: 20px 0 0 20px; }
-  .drawerInner { padding: 78px 20px 20px; gap: 14px; }
+  .drawerInner { padding: 124px 20px 20px; gap: 14px; }
   .drawerHead h2 { font-size: clamp(34px, 10vw, 44px); }
   .drawerBlurb { font-size: 13.5px; }
   .drawerMedia { flex-basis: 170px; min-height: 130px; }
@@ -310,6 +517,12 @@
 }
 @media (max-width: 600px) {
   .footerWrap { grid-template-columns: 1fr; }
+  .hall { justify-items: start; }
+  .offerGrid { grid-template-columns: 1fr; }
+  .offersHead h2 { font-size: clamp(32px, 9vw, 44px); }
+  .clock { gap: 14px; }
+  .clockCell { min-width: 48px; }
+  .countdownCopy h2 { font-size: clamp(28px, 8vw, 38px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .cue span { animation: none; transform: none; }
@@ -334,11 +547,19 @@
   background: rgba(251, 248, 243, 0.92); color: var(--o-ink); font-size: 24px; line-height: 1;
 }
 .offerClose:hover { color: var(--o-title); }
-.offerImage { position: relative; aspect-ratio: 2.45 / 1; border-radius: 10px; overflow: hidden; background: #2a2420; margin-top: 18px; }
+.offerImage { position: relative; height: clamp(150px, 24dvh, 200px); border-radius: 10px; overflow: hidden; background: #2a2420; margin-top: 18px; }
 .offerForm, .offerDone { display: grid; gap: 12px; }
 .offerHead { display: grid; gap: 6px; text-align: center; margin-bottom: 4px; }
 .offer h2 { font-family: var(--display); font-weight: 400; color: var(--o-title); font-size: clamp(22px, 5vw, 27px); line-height: 1.15; margin: 0; text-wrap: balance; }
 .offer p { margin: 0; color: var(--o-muted); font-size: 13.5px; line-height: 1.5; text-wrap: balance; }
+.offerEyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--o-gold); }
+.offerDates { font-family: var(--mono); font-size: 10.5px !important; letter-spacing: 0.1em; text-transform: uppercase; color: var(--o-title) !important; }
+.offerClock {
+  justify-self: center; margin-top: 2px; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--o-line); background: #f4e8d3;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--o-title);
+}
 .offerDone { text-align: center; }
 .offerInput {
   width: 100%; min-width: 0; height: 46px; font: inherit; font-size: 15px; color: var(--o-ink);

@@ -2,6 +2,7 @@
 
 import type { Ref } from "react";
 import Image from "next/image";
+import { EVENT } from "@/lib/ondine/event";
 import type { PhotoShot, Product } from "@/lib/ondine/types";
 import { useEnquiry } from "./Enquiry";
 import styles from "./Ondine.module.css";
@@ -65,9 +66,14 @@ export function ProductDrawer({ product: p, index, total, shot, ref }: Props) {
           ))}
         </dl>
 
+        <p className={styles.drawerOffer}>
+          <span>Festival offer</span>
+          {EVENT.productOffer}
+        </p>
+
         <div className={styles.drawerBuy}>
           <button className={styles.pill} type="button" onClick={() => open(`${p.name} ${p.accent}`)}>
-            Enquire
+            Reserve this piece
           </button>
           <span className={styles.drawerNote}>Price on request · private viewing by appointment</span>
         </div>

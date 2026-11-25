@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { EVENT } from "@/lib/ondine/event";
 import { PRODUCTS } from "@/lib/ondine/products";
 import { renderScene } from "@/lib/ondine/scene";
 import type { PhotoSet, PhotoShot, Product } from "@/lib/ondine/types";
@@ -19,6 +20,7 @@ function PhotoThumb({ product, shot }: { product: Product; shot: PhotoShot }) {
         sizes="(max-width: 900px) 100vw, 33vw"
         style={{ objectFit: "cover", objectPosition: `${shot.focus.x * 100}% ${shot.focus.y * 100}%` }}
       />
+      <span className={styles.pieceOffer}>Festival offer</span>
     </div>
   );
 }
@@ -49,7 +51,12 @@ function DrawnThumb({ product, index }: { product: Product; index: number }) {
     return () => ro.disconnect();
   }, [product, index]);
 
-  return <canvas ref={ref} className={styles.thumb} role="img" aria-label={`${product.name} ${product.accent}, close-up`} />;
+  return (
+    <div className={styles.thumb}>
+      <canvas ref={ref} className={styles.thumbCanvas} role="img" aria-label={`${product.name} ${product.accent}, close-up`} />
+      <span className={styles.pieceOffer}>Festival offer</span>
+    </div>
+  );
 }
 
 export function Collection({ photos }: { photos?: PhotoSet }) {
@@ -58,8 +65,11 @@ export function Collection({ photos }: { photos?: PhotoSet }) {
     <section className={styles.collection} id="collection">
       <div className={styles.wrap}>
         <div className={styles.head}>
-          <h2>Festival collection</h2>
-          <p>Every piece is BIS hallmarked, comes with its grading certificate, and is resized free for the first year.</p>
+          <div className={styles.headCopy}>
+            <span className={styles.eyebrow}>The festival edit</span>
+            <h2>Three pieces in the spotlight</h2>
+          </div>
+          <p>{EVENT.leadOffer} during {EVENT.shortDate}. Every piece is BIS hallmarked, comes with its grading certificate, and is resized free for the first year.</p>
         </div>
         <div className={styles.grid}>
           {PRODUCTS.map((p, i) => (

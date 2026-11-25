@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, type MutableRefObject } from "react";
 import { PRODUCTS } from "@/lib/ondine/products";
+import { EVENT } from "@/lib/ondine/event";
 import { band, cameraAt, clamp, easeInOutCubic } from "@/lib/ondine/camera";
 import { drawCover, renderScene } from "@/lib/ondine/scene";
 import { renderPhotos } from "@/lib/ondine/photoScene";
 import type { StoryMode } from "@/lib/ondine/types";
 import { ProductDrawer } from "./ProductDrawer";
+import { useOffer } from "./offerContext";
 import styles from "./Ondine.module.css";
 
 type Props = {
@@ -15,9 +17,10 @@ type Props = {
   mode: StoryMode;
 };
 
-const RAIL = ["Earring", "Pendant", "Ring", "Rewind"];
+const RAIL = ["Earring", "Pendant", "Ring", "Visit"];
 
 export function ScrollStory({ images, mode }: Props) {
+  const { openOffer } = useOffer();
   const storyRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -63,6 +66,9 @@ export function ScrollStory({ images, mode }: Props) {
         const o = p < 0.01 ? 1 : clamp(1 - (p - 0.01) / 0.05);
         hero.style.opacity = String(o);
         hero.style.transform = `translateY(${(1 - o) * -30}px)`;
+        hero.style.visibility = o <= 0.01 ? "hidden" : "visible";
+        // Once the hero has faded its buttons must stop catching clicks and focus.
+        hero.inert = o <= 0.6;
         // The rail shares the left edge with the title, so it only appears once the hero has gone.
         if (railRef.current) railRef.current.style.opacity = String(1 - o);
       }
@@ -121,7 +127,20 @@ export function ScrollStory({ images, mode }: Props) {
 
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { rootMargin: "100px" });
+    const io = new IntersectionObserver(([e]) => {
+      // The section is much taller than the viewport, so its intersection ratio
+      // stays small; presence, not ratio, decides whether the loop should run.
+      visible = e.isIntersecting;
+      if (!visible) {
+        document.documentElement.dataset.drawer = "closed";
+        cardRefs.current.forEach((el) => {
+          if (!el) return;
+          el.style.visibility = "hidden";
+          el.dataset.on = "false";
+          el.inert = true;
+        });
+      }
+    }, { rootMargin: "100px" });
     io.observe(story);
     window.addEventListener("scroll", readScroll, { passive: true });
     window.addEventListener("resize", readScroll);
@@ -149,10 +168,22 @@ export function ScrollStory({ images, mode }: Props) {
         {mode.kind === "photos" && <div className={styles.scrim} />}
 
         <div className={styles.hero} ref={heroRef} data-align={mode.kind === "photos" ? "right" : "left"}>
-          <div className={styles.eyebrow}>The Festival Collection</div>
-          <h1>Harris Nadar <i>Diamond Festival</i></h1>
-          <p>Three pieces from the festival collection: cascading drop earrings, a stone-set pendant and a gold filigree ring.</p>
-          <div className={styles.cue}><span />Scroll to dive in</div>
+          <div className={styles.heroMain}>
+            <div className={styles.eyebrow}>D. Harris Nadar · Diamond Festival</div>
+            <div className={styles.heroDate}>
+              <strong>{EVENT.heroDate.range}</strong>
+              <span>{EVENT.heroDate.month}</span>
+            </div>
+            <h1>The showroom, on <i>festival terms.</i></h1>
+          </div>
+          <div className={styles.heroSide}>
+            <p>{EVENT.leadOffer}, free certification and private bridal consultations. Nine days only.</p>
+            <div className={styles.heroActions}>
+              <button className={styles.primary} type="button" onClick={openOffer}>Reserve your visit</button>
+              <a className={styles.ghost} href="#offers">See the offers</a>
+            </div>
+            <div className={styles.cue}><span />Scroll to see the festival edit</div>
+          </div>
         </div>
 
         <ol className={styles.rail} ref={railRef}>
@@ -173,9 +204,13 @@ export function ScrollStory({ images, mode }: Props) {
         ))}
 
         <div className={styles.finale} ref={finaleRef} data-on="false" data-align={mode.kind === "photos" ? "right" : "center"}>
-          <div className={styles.eyebrow}>Fin</div>
-          <h2>The whole festival, in <i>three pieces.</i></h2>
-          <a className={styles.ghost} href="#collection">View the collection</a>
+          <div className={styles.eyebrow}>{EVENT.name} · {EVENT.dateLabel}</div>
+          <h2>Come and see it <i>before {EVENT.closeLabel}.</i></h2>
+          <p>{EVENT.leadOffer} — and the whole festival edit, on the tables.</p>
+          <div className={styles.heroActions}>
+            <button className={styles.primary} type="button" onClick={openOffer}>Reserve your visit</button>
+            <a className={styles.ghost} href="#visit">Plan your visit</a>
+          </div>
         </div>
 
         <div className={styles.meter} ref={meterRef} />

@@ -1,19 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
+import { EVENT } from "@/lib/ondine/event";
 import { useDialogScrollLock } from "./Enquiry";
+import { FestivalCountdown } from "./Countdown";
+import { useOffer } from "./offerContext";
 import styles from "./Ondine.module.css";
 
 /*
- * Offer popup shown on every page load, right after the loading screen.
- * The offer line is deliberately generic (no discount figure); edit OFFER_LINE if a specific offer is announced.
+ * The festival invitation, shown on every page load shortly after the
+ * loading screen. Any "Reserve" button on the page opens the same dialog.
  */
-const OFFER_TITLE = "Unlock Your Diamond Festival Offer";
-const OFFER_LINE = "Book a showroom visit and get an exclusive festival offer on diamond jewellery";
+const OFFER_TITLE = "Your Diamond Festival invitation";
 const IMAGE = { src: "/photos/festival-01.webp", position: "50% 18%" }; // face and drop earring
 const INTERESTS = ["Diamond Earrings", "Diamond Necklaces & Pendants", "Diamond Rings", "Bridal Diamond Sets"];
-const SLOTS = ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"];
+const SLOTS = ["10:00 AM - 12:00 PM", "12:00 PM - 02:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM"];
 
 const OPEN_DELAY_MS = 900; // lets the loading screen fade out first
 
@@ -25,7 +27,7 @@ const today = () => {
 type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; name: string } | { kind: "error"; message: string };
 
 export function OfferPopup({ ready }: { ready: boolean }) {
-  const ref = useRef<HTMLDialogElement>(null);
+  const { dialogRef: ref, openOffer } = useOffer();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [hasDate, setHasDate] = useState(false);
   useDialogScrollLock(ref);
@@ -33,12 +35,9 @@ export function OfferPopup({ ready }: { ready: boolean }) {
   // Opens on every page load, once the loading screen has finished.
   useEffect(() => {
     if (!ready) return;
-    const t = setTimeout(() => {
-      const d = ref.current;
-      if (d && !d.open) d.showModal();
-    }, OPEN_DELAY_MS);
+    const t = setTimeout(openOffer, OPEN_DELAY_MS);
     return () => clearTimeout(t);
-  }, [ready]);
+  }, [ready, openOffer]);
 
   const close = () => ref.current?.close();
 
@@ -79,15 +78,20 @@ export function OfferPopup({ ready }: { ready: boolean }) {
 
         {status.kind === "sent" ? (
           <div className={styles.offerDone} role="status">
-            <h2 id="offer-title">Your offer is unlocked, {status.name}.</h2>
-            <p>Our showroom team will call you to confirm your visit and share the offer details.</p>
+            <h2 id="offer-title">Your slot is booked, {status.name}.</h2>
+            <p>Our showroom team will call you to confirm your visit and the festival offer.</p>
             <button className={styles.offerSubmit} type="button" onClick={close}>Continue to the festival</button>
           </div>
         ) : (
           <form className={styles.offerForm} onSubmit={submit}>
             <div className={styles.offerHead}>
+              <span className={styles.offerEyebrow}>{EVENT.name}</span>
               <h2 id="offer-title">{OFFER_TITLE}</h2>
-              <p>{OFFER_LINE}</p>
+              <p className={styles.offerDates}>{EVENT.dateLabel} · {EVENT.hours}</p>
+              <p>{EVENT.leadOffer}, plus free certification and a private bridal consultation.</p>
+              <span className={styles.offerClock}>
+                <FestivalCountdown variant="inline" />
+              </span>
             </div>
 
             <input className={styles.offerInput} id="offer-name" name="name" placeholder="Your Name *" aria-label="Your name"
@@ -98,7 +102,7 @@ export function OfferPopup({ ready }: { ready: boolean }) {
             {/* Phones show an empty date input as a blank box, so draw our own placeholder over it. */}
             <div className={styles.offerDate}>
               <input className={styles.offerInput} id="offer-date" name="visitDate" type="date" aria-label="Visit date"
-                required min={today()} onChange={(e) => setHasDate(Boolean(e.target.value))} />
+                required min={today()} max={EVENT.endAt.slice(0, 10)} onChange={(e) => setHasDate(Boolean(e.target.value))} />
               {!hasDate && <span className={styles.offerDateHint} aria-hidden="true">Select Date *</span>}
             </div>
             <select className={styles.offerInput} id="offer-time" name="visitTime" aria-label="Visit time" required defaultValue="">
@@ -119,7 +123,7 @@ export function OfferPopup({ ready }: { ready: boolean }) {
             {status.kind === "error" && <p className={styles.offerError} role="alert">{status.message}</p>}
 
             <button className={styles.offerSubmit} type="submit" disabled={status.kind === "sending"}>
-              {status.kind === "sending" ? "Sending…" : "Unlock Offer"}
+              {status.kind === "sending" ? "Sending…" : "Reserve my visit"}
             </button>
           </form>
         )}

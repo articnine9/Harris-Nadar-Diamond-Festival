@@ -12,8 +12,10 @@ export function Header() {
         <Image className={`${styles.logo} ${styles.logoDark}`} src="/logo-dark.png" alt="" width={1368} height={229} priority />
       </a>
       <nav className={styles.nav} aria-label="Main">
-        <a href="#story">The Story</a>
+        <a href="#story">The Festival</a>
+        <a href="#offers">Offers</a>
         <a href="#collection">Collection</a>
+        <a href="#visit">Visit</a>
       </nav>
     </header>
   );

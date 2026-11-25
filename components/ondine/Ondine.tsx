@@ -4,13 +4,20 @@ import { useMemo } from "react";
 import Image from "next/image";
 import { useAssetPreloader } from "@/lib/ondine/useAssetPreloader";
 import { photoUrls } from "@/lib/ondine/photos";
+import { EVENT } from "@/lib/ondine/event";
 import type { FrameSource, PhotoSet, StoryMode } from "@/lib/ondine/types";
 import { EnquiryProvider } from "./Enquiry";
-import { Collection } from "./Collection";
-import { Header } from "./Header";
+import { OfferProvider } from "./offerContext";
 import { OfferPopup } from "./OfferPopup";
+import { FestivalBar } from "./FestivalBar";
+import { Collection } from "./Collection";
+import { CountdownBand } from "./Countdown";
+import { Header } from "./Header";
+import { Offers } from "./Offers";
 import { Preloader } from "./Preloader";
 import { ScrollStory } from "./ScrollStory";
+import { StickyCTA } from "./StickyCTA";
+import { Visit } from "./Visit";
 import styles from "./Ondine.module.css";
 
 type Props = {
@@ -43,22 +50,33 @@ export default function Ondine({ photos, frames }: Props) {
 
   return (
     <EnquiryProvider>
-      <Preloader {...preload} unit={unit} />
-      <OfferPopup ready={preload.done} />
-      <Header />
-      <main>
-        <ScrollStory images={preload.images} mode={mode} />
-        <Collection photos={mode.kind === "photos" ? mode.set : undefined} />
-      </main>
-      <footer className={styles.footer} id="atelier">
-        <div className={`${styles.wrap} ${styles.footerWrap}`}>
-          <div className={styles.footerBrand}>
-            <Image className={styles.footerLogo} src="/logo-light.png" alt="D. Harris Nadar Diamonds & Jewellery" width={1368} height={229} />
-            <span>Private viewings at the showroom by appointment.</span>
+      <OfferProvider>
+        <Preloader {...preload} unit={unit} />
+        <OfferPopup ready={preload.done} />
+        <FestivalBar />
+        <Header />
+        <main>
+          <ScrollStory images={preload.images} mode={mode} />
+          <Offers />
+          <CountdownBand />
+          <Visit />
+          <Collection photos={mode.kind === "photos" ? mode.set : undefined} />
+        </main>
+        <StickyCTA />
+        <footer className={styles.footer} id="atelier">
+          <div className={`${styles.wrap} ${styles.footerWrap}`}>
+            <div className={styles.footerBrand}>
+              <Image className={styles.footerLogo} src="/logo-light.png" alt="D. Harris Nadar Diamonds & Jewellery" width={1368} height={229} />
+              <span>{EVENT.dateLabel} · {EVENT.hours}</span>
+              <span>{EVENT.address ? `${EVENT.venue} · ${EVENT.address}` : EVENT.venue}</span>
+            </div>
+            <div className={styles.hall}>
+              <span>{EVENT.leadOffer}</span>
+              <span>BIS Hallmark · 750 / 950 · GIA certified</span>
+            </div>
           </div>
-          <div className={styles.hall}>BIS Hallmark · 750 / 950 · GIA certified</div>
-        </div>
-      </footer>
+        </footer>
+      </OfferProvider>
     </EnquiryProvider>
   );
 }

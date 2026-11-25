@@ -9,6 +9,8 @@
   --display: var(--font-display), "Didot", Georgia, serif;
   --body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
   --mono: var(--font-mono), ui-monospace, Menlo, Consolas, monospace;
+  /* Height of the fixed festival announcement bar. */
+  --bar-h: 42px;
   color-scheme: dark;
 }
 

@@ -1,7 +1,8 @@
 # Ondine — scroll-driven jewellery storefront (Next.js + TypeScript)
 
-One camera move on the scrollbar: wide shot of a woman by a night pool → earring → pendant → ring
-(each with its own product card) → fast rewind → collection grid.
+The Diamond Festival leads: fixed dates bar, an event hero, four offers, a countdown band and a
+visit block. The product journey sits between them — one camera move on the scrollbar: wide shot
+of a woman by a night pool → earring → pendant → ring (each with its own drawer) → finale.
 
 ## Run
 
@@ -17,19 +18,27 @@ npm run build && npm start
 app/
   layout.tsx            fonts (next/font), metadata
   page.tsx              <Ondine />, frame-sequence config lives here
-  globals.css           colour tokens
+  globals.css           colour tokens, --bar-h (festival bar height)
 components/ondine/
   Ondine.tsx            composes everything; runs the preloader
   Preloader.tsx         full-screen loader, real % from decoded assets, locks scroll until done
-  ScrollStory.tsx       sticky canvas + product cards + progress rail (rAF loop, no React re-renders per frame)
+  FestivalBar.tsx       fixed festival strip: dates, live countdown, Book a slot
+  ScrollStory.tsx       sticky canvas + hero + product drawers + finale (rAF loop, no React re-renders per frame)
+  Offers.tsx            the four festival offers
+  Countdown.tsx         compact clock + full-width countdown band
+  Visit.tsx             dates, hours, address, map, what to expect
   Collection.tsx        product grid with close-up renders
-  Header.tsx, BagContext.tsx
+  OfferPopup.tsx        festival invitation / visit booking (opens on every page load)
+  StickyCTA.tsx         phone-only booking bar
+  Header.tsx
   Ondine.module.css
 lib/ondine/
-  products.ts           product data, prices (₹, en-IN format), camera focus + card timing per piece
+  event.ts              ALL festival facts: dates, hours, venue, offers, slot cap, contact
+  products.ts           product data, camera focus + card timing per piece
   camera.ts             scroll keyframes → camera (eased, log-space zoom)
   scene.ts              procedural night-pool renderer + cover-fit frame drawer
   useAssetPreloader.ts  loads + img.decode()s frames with a worker pool, tracks fonts
+  useCountdown.ts       hydration-safe one-second clock
   types.ts
 ```
 
@@ -50,7 +59,10 @@ nearest earlier frame.
 
 ## Customising
 
-- Products, prices, specs and card timing: `lib/ondine/products.ts`
+- **Festival dates, hours, venue, offers, booking cap, phone/WhatsApp:** `lib/ondine/event.ts`
+  (every date, offer tile, countdown and popup line reads from this file — replace the `TODO` values).
+- Products and specs: `lib/ondine/products.ts`
 - Camera path and holds: `keyframes()` in `lib/ondine/camera.ts`
-- Cart: replace `add()` in `BagContext.tsx` with your cart API.
-- Story length: `.story { height: 900svh }` in the CSS module. Longer = slower scrub.
+- Story length: `.story { height: 560svh }` in the CSS module. Longer = slower scrub.
+- The invitation popup opens on every page load, about a second after the loading screen.
+- Contact details (`address`, `mapUrl`, `phone`, `whatsappHref` in `event.ts`) stay hidden on the page until filled in.

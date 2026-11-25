@@ -56,25 +56,29 @@
   left: max(24px, env(safe-area-inset-left, 0px)); right: max(24px, env(safe-area-inset-right, 0px));
 }
 .heroMain, .heroSide { display: grid; gap: 14px; align-content: end; min-width: 0; }
-/* Photo mode: the face and the drop earring fill the top of the frame, so the copy sits in a
-   band along the bottom: date and title on the left, offer line and buttons on the right. */
+/* Photo mode: the drop earring sits right of centre (x ≈ 0.62 of the photo) and the opening
+   frame crops in hard on wide screens, so every line of copy stacks in one column at the
+   bottom left, clear of the earring at any width. */
 .hero[data-align="right"] {
   --hero-gutter: max(24px, 4vw, env(safe-area-inset-left, 0px));
-  left: var(--hero-gutter); right: var(--hero-gutter); bottom: 7svh; max-width: none;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); column-gap: clamp(28px, 5vw, 80px); align-items: end;
+  left: var(--hero-gutter); right: auto; bottom: 6svh; width: min(560px, 50vw); max-width: none;
+  grid-template-columns: minmax(0, 1fr); row-gap: 22px; align-items: end;
   --hero-ink: var(--pearl); --hero-gold: #e0bd7f; --hero-muted: #e6ded1; --hero-label: #e0c48f; isolation: isolate;
 }
-.hero[data-align="right"] h1 { font-size: clamp(38px, 5vw, 76px); line-height: 0.95; letter-spacing: 0.01em; max-width: 12ch; }
+.hero[data-align="right"] h1 { font-size: clamp(38px, 4.2vw, 68px); line-height: 0.96; letter-spacing: 0.01em; max-width: 12ch; }
 .hero h1 i { display: block; color: var(--gold); }
-/* Dark fade from the bottom edge, fading out with the hero, so the type reads over the dress. */
+/* Dark fade rising from the bottom-left corner, fading out with the hero, so the type reads
+   over the dress while the earring on the right stays bright. */
 .hero[data-align="right"]::before {
   content: ""; position: absolute; z-index: -1; pointer-events: none;
-  left: calc(-1 * var(--hero-gutter)); right: calc(-1 * var(--hero-gutter)); top: -55%; bottom: -7svh;
-  background: linear-gradient(to top, rgba(6, 12, 17, 0.92) 0%, rgba(6, 12, 17, 0.78) 38%, rgba(6, 12, 17, 0.35) 70%, rgba(6, 12, 17, 0));
+  left: calc(-1 * var(--hero-gutter)); right: -60%; top: -45%; bottom: -6svh;
+  background:
+    linear-gradient(to top, rgba(6, 12, 17, 0.9) 0%, rgba(6, 12, 17, 0.7) 40%, rgba(6, 12, 17, 0) 100%),
+    radial-gradient(120% 90% at 0% 100%, rgba(6, 12, 17, 0.45), rgba(6, 12, 17, 0) 70%);
+  -webkit-mask-image: linear-gradient(to right, #000 55%, transparent);
+  mask-image: linear-gradient(to right, #000 55%, transparent);
 }
-.hero[data-align="right"] .heroSide { gap: 18px; padding-bottom: 6px; }
-/* Tablets: the narrower right column has no room for the scroll hint. */
-@media (max-width: 1100px) { .hero[data-align="right"] .cue { display: none; } }
+.hero[data-align="right"] .heroSide { gap: 18px; }
 .hero[data-align="right"] p { font-size: 16px; line-height: 1.6; max-width: 40ch; text-shadow: 0 1px 3px rgba(6, 12, 17, 0.8); }
 .hero[data-align="right"] h1 { color: var(--hero-ink); }
 .hero[data-align="right"] h1 i { color: var(--hero-gold); }
@@ -462,7 +466,7 @@
   .hero > .eyebrow, .heroMain > .eyebrow { display: none; }
   .hero p { font-size: 14px; }
   .heroDate span { font-size: 10px; }
-  .hero[data-align="right"] { --hero-gutter: max(20px, env(safe-area-inset-left, 0px)); grid-template-columns: 1fr; row-gap: 14px; bottom: 9svh; }
+  .hero[data-align="right"] { --hero-gutter: max(20px, env(safe-area-inset-left, 0px)); right: var(--hero-gutter); width: auto; row-gap: 14px; bottom: 9svh; }
   .hero[data-align="right"] h1 { font-size: clamp(32px, 9.4vw, 46px); }
   .hero[data-align="right"] p { font-size: 14px; }
   .heroMain, .heroSide, .hero[data-align="right"] .heroSide { gap: 10px; }

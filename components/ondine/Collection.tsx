@@ -66,8 +66,8 @@ export function Collection({ photos }: { photos?: PhotoSet }) {
       <div className={styles.wrap}>
         <div className={styles.head}>
           <div className={styles.headCopy}>
-            <span className={styles.eyebrow}>The festival edit</span>
-            <h2>Three pieces in the spotlight</h2>
+            <span className={styles.eyebrow}>The dazzling edit</span>
+            <h2>Three signature categories</h2>
           </div>
           <p>{EVENT.leadOffer} during {EVENT.shortDate}. Every piece is BIS hallmarked, comes with its grading certificate, and is resized free for the first year.</p>
         </div>

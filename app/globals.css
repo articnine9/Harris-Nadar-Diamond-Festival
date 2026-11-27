@@ -1,12 +1,32 @@
 :root {
-  --ink: #060c11;
-  --pool: #0b2a33;
-  --pearl: #efe7da;
-  --gold: #c9a66b;
-  --mist: #93a6aa;
-  --line: rgba(239, 231, 218, 0.14);
-  --glass: rgba(8, 18, 24, 0.62);
+  /* ---------- Dazzling Diamond Fest palette (from the 2026 poster) ---------- */
+  --violet-950: #17143f;
+  --violet-900: #221a52;
+  --violet-800: #2f2368;
+  --violet-700: #3b2a86;
+  --violet-600: #5b3fa8;
+  --violet-400: #8f7be0;
+  --violet-200: #c9b6f2;
+  --lilac-100: #ede6fb;
+  --paper: #fcfaff;
+  --violet-ink: #201a44;
+  --silver: #c9cbd8;
+  --plum: #8c1d2c;
+
+  /* Aliases the rest of the stylesheet already speaks. */
+  --ink: var(--violet-950);
+  --pool: var(--violet-900);
+  --pearl: #fcfaff;
+  --gold: #c8a24a;
+  --gold-soft: #e7c97e;
+  --mist: #b9aedf;
+  --line: rgba(201, 182, 242, 0.22);
+  --glass: rgba(23, 20, 63, 0.66);
+
+  --aurora: linear-gradient(160deg, #17143f 0%, #3b2a86 38%, #8f7be0 72%, #c9b6f2 100%);
+
   --display: var(--font-display), "Didot", Georgia, serif;
+  --script: var(--font-script), "Segoe Script", "Brush Script MT", cursive;
   --body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
   --mono: var(--font-mono), ui-monospace, Menlo, Consolas, monospace;
   /* Height of the fixed festival announcement bar. */
@@ -28,6 +48,7 @@ body {
 a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+::selection { background: var(--violet-600); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

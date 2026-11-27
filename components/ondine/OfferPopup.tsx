@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { EVENT } from "@/lib/ondine/event";
 import { useDialogScrollLock } from "./Enquiry";
@@ -9,35 +9,34 @@ import { useOffer } from "./offerContext";
 import styles from "./Ondine.module.css";
 
 /*
- * The festival invitation, shown on every page load shortly after the
+ * The festival invitation, shown once per browser session shortly after the
  * loading screen. Any "Reserve" button on the page opens the same dialog.
  */
-const OFFER_TITLE = "Your Diamond Festival invitation";
-const IMAGE = { src: "/photos/festival-01.webp", position: "50% 18%" }; // face and drop earring
-const INTERESTS = ["Diamond Earrings", "Diamond Necklaces & Pendants", "Diamond Rings", "Bridal Diamond Sets"];
-const SLOTS = ["10:00 AM - 12:00 PM", "12:00 PM - 02:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM"];
+const OFFER_TITLE = "You're invited";
+const IMAGE = { src: "/photos/banner-model.jpg", position: "50% 15%" }; // face and diamond necklace
 
 const OPEN_DELAY_MS = 900; // lets the loading screen fade out first
 
-const today = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
-
-type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; name: string } | { kind: "error"; message: string };
+type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent" } | { kind: "error"; message: string };
 
 export function OfferPopup({ ready }: { ready: boolean }) {
-  const { dialogRef: ref, openOffer } = useOffer();
+  const { dialogRef: ref } = useOffer();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const [hasDate, setHasDate] = useState(false);
+  const openedRef = useRef(false);
   useDialogScrollLock(ref);
 
-  // Opens on every page load, once the loading screen has finished.
+  // Opens shortly after the loading screen has finished.
   useEffect(() => {
-    if (!ready) return;
-    const t = setTimeout(openOffer, OPEN_DELAY_MS);
+    if (!ready || openedRef.current) return;
+    const t = setTimeout(() => {
+      const d = ref.current;
+      if (d && !d.open) {
+        openedRef.current = true;
+        d.showModal();
+      }
+    }, OPEN_DELAY_MS);
     return () => clearTimeout(t);
-  }, [ready, openOffer]);
+  }, [ready, ref]);
 
   const close = () => ref.current?.close();
 
@@ -48,11 +47,8 @@ export function OfferPopup({ ready }: { ready: boolean }) {
     const payload = {
       type: "offer",
       piece: "Festival offer",
-      name: String(fd.get("name") ?? ""),
       phone: String(fd.get("phone") ?? ""),
-      visitDate: String(fd.get("visitDate") ?? ""),
-      visitTime: String(fd.get("visitTime") ?? ""),
-      interests: fd.getAll("interests").map(String),
+      email: String(fd.get("email") ?? ""),
     };
     setStatus({ kind: "sending" });
     try {
@@ -60,8 +56,7 @@ export function OfferPopup({ ready }: { ready: boolean }) {
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || "Could not send your details. Please try again.");
       form.reset();
-      setHasDate(false);
-      setStatus({ kind: "sent", name: payload.name.split(" ")[0] });
+      setStatus({ kind: "sent" });
     } catch (err) {
       setStatus({ kind: "error", message: err instanceof Error ? err.message : "Could not send your details. Please try again." });
     }
@@ -78,47 +73,36 @@ export function OfferPopup({ ready }: { ready: boolean }) {
 
         {status.kind === "sent" ? (
           <div className={styles.offerDone} role="status">
-            <h2 id="offer-title">Your slot is booked, {status.name}.</h2>
-            <p>Our showroom team will call you to confirm your visit and the festival offer.</p>
+            <h2 id="offer-title">You&apos;re on the list.</h2>
+            <p>Our showroom team will reach out to you with the festival offer details.</p>
             <button className={styles.offerSubmit} type="button" onClick={close}>Continue to the festival</button>
           </div>
         ) : (
           <form className={styles.offerForm} onSubmit={submit}>
             <div className={styles.offerHead}>
-              <span className={styles.offerEyebrow}>{EVENT.name}</span>
+              <span className={styles.offerEyebrow}>{EVENT.name} {EVENT.year}</span>
               <h2 id="offer-title">{OFFER_TITLE}</h2>
-              <p className={styles.offerDates}>{EVENT.dateLabel} · {EVENT.hours}</p>
-              <p>{EVENT.leadOffer}, plus free certification and a private bridal consultation.</p>
+              <p className={styles.offerDates}>{EVENT.dateLabel} · {EVENT.sundays}</p>
+              <p>{EVENT.tagline}. {EVENT.leadOffer}, plus free certification and a private bridal consultation.</p>
               <span className={styles.offerClock}>
                 <FestivalCountdown variant="inline" />
               </span>
             </div>
 
-            <input className={styles.offerInput} id="offer-name" name="name" placeholder="Your Name *" aria-label="Your name"
-              required autoComplete="name" maxLength={80} />
+            <ul className={styles.offerPerks}>
+              {EVENT.offers.map((offer) => (
+                <li key={offer.id}>
+                  <strong>{offer.value}</strong> {offer.unit}
+                  <span>{offer.sub}</span>
+                </li>
+              ))}
+            </ul>
+
             <input className={styles.offerInput} id="offer-phone" name="phone" type="tel" placeholder="Mobile Number *" aria-label="Mobile number"
               required autoComplete="tel" inputMode="tel" pattern="[+0-9 ()-]{10,16}" maxLength={16}
               title="10-digit mobile number, with country code if outside India" />
-            {/* Phones show an empty date input as a blank box, so draw our own placeholder over it. */}
-            <div className={styles.offerDate}>
-              <input className={styles.offerInput} id="offer-date" name="visitDate" type="date" aria-label="Visit date"
-                required min={today()} max={EVENT.endAt.slice(0, 10)} onChange={(e) => setHasDate(Boolean(e.target.value))} />
-              {!hasDate && <span className={styles.offerDateHint} aria-hidden="true">Select Date *</span>}
-            </div>
-            <select className={styles.offerInput} id="offer-time" name="visitTime" aria-label="Visit time" required defaultValue="">
-              <option value="" disabled>Select Time *</option>
-              {SLOTS.map((s) => <option key={s}>{s}</option>)}
-            </select>
-
-            <fieldset className={styles.offerChecks}>
-              <legend className={styles.srOnly}>Interested in</legend>
-              {INTERESTS.map((label, i) => (
-                <label key={label}>
-                  <input type="checkbox" id={`offer-interest-${i}`} name="interests" value={label} />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </fieldset>
+            <input className={styles.offerInput} id="offer-email" name="email" type="email" placeholder="Email Address *" aria-label="Email address"
+              required autoComplete="email" maxLength={120} />
 
             {status.kind === "error" && <p className={styles.offerError} role="alert">{status.message}</p>}
 

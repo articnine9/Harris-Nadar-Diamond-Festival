@@ -7,6 +7,7 @@ import { band, cameraAt, clamp, easeInOutCubic } from "@/lib/ondine/camera";
 import { drawCover, renderScene } from "@/lib/ondine/scene";
 import { renderPhotos } from "@/lib/ondine/photoScene";
 import type { StoryMode } from "@/lib/ondine/types";
+import { FestiveDecor } from "./FestiveDecor";
 import { ProductDrawer } from "./ProductDrawer";
 import { useOffer } from "./offerContext";
 import styles from "./Ondine.module.css";
@@ -17,7 +18,7 @@ type Props = {
   mode: StoryMode;
 };
 
-const RAIL = ["Earring", "Pendant", "Ring", "Visit"];
+const RAIL = ["Minimals", "Bridal", "Custom", "Visit"];
 
 export function ScrollStory({ images, mode }: Props) {
   const { openOffer } = useOffer();
@@ -165,25 +166,35 @@ export function ScrollStory({ images, mode }: Props) {
       <div className={styles.stage}>
         <canvas ref={canvasRef} className={styles.scene} aria-hidden="true" />
         <div className={styles.vignette} />
+        {mode.kind === "photos" && <div className={styles.veil} />}
+        <FestiveDecor />
         {mode.kind === "photos" && <div className={styles.scrim} />}
 
         <div className={styles.hero} ref={heroRef} data-align={mode.kind === "photos" ? "right" : "left"}>
-          <div className={styles.heroMain}>
-            <div className={styles.eyebrow}>D. Harris Nadar · Diamond Festival</div>
-            <div className={styles.heroDate}>
-              <strong>{EVENT.heroDate.range}</strong>
-              <span>{EVENT.heroDate.month}</span>
-            </div>
-            <h1>The showroom, on <i>festival terms.</i></h1>
+          <div className={styles.heroEyebrow}>
+            <span className={styles.eyebrow}>D. Harris Nadar</span>
+            <span className={styles.heroEyebrowDot} aria-hidden="true" />
+            <span className={styles.eyebrow}>{EVENT.name} {EVENT.year}</span>
           </div>
-          <div className={styles.heroSide}>
-            <p>{EVENT.leadOffer}, free certification and private bridal consultations. Nine days only.</p>
-            <div className={styles.heroActions}>
-              <button className={styles.primary} type="button" onClick={openOffer}>Reserve your visit</button>
-              <a className={styles.ghost} href="#offers">See the offers</a>
-            </div>
-            <div className={styles.cue}><span />Scroll to see the festival edit</div>
+          <h1 className={styles.heroTitle}>
+            <span className={styles.heroScript}>Dazzling</span>
+            <span className={styles.heroFest}>Diamond Fest</span>
+            <span className={styles.heroYear}>{EVENT.year}</span>
+          </h1>
+          <p className={styles.heroTag}>{EVENT.tagline}</p>
+          <div className={styles.heroDate}>
+            <strong>{EVENT.heroDate.range}</strong>
+            <span>{EVENT.heroDate.month}</span>
           </div>
+          <p className={styles.heroLead}>
+            {EVENT.leadOffer}, plus free certification and private bridal consultations — {EVENT.durationLabel} only.
+          </p>
+          <p className={styles.heroSundays}>{EVENT.sundays}</p>
+          <div className={styles.heroActions}>
+            <button className={styles.primary} type="button" onClick={openOffer}>Reserve your visit</button>
+            <a className={styles.ghost} href="#offers">See the offers</a>
+          </div>
+          <div className={styles.cue}><span />Scroll to see the dazzling edit</div>
         </div>
 
         <ol className={styles.rail} ref={railRef}>
@@ -204,9 +215,9 @@ export function ScrollStory({ images, mode }: Props) {
         ))}
 
         <div className={styles.finale} ref={finaleRef} data-on="false" data-align={mode.kind === "photos" ? "right" : "center"}>
-          <div className={styles.eyebrow}>{EVENT.name} · {EVENT.dateLabel}</div>
+          <div className={styles.eyebrow}>{EVENT.name} {EVENT.year} · {EVENT.dateLabel}</div>
           <h2>Come and see it <i>before {EVENT.closeLabel}.</i></h2>
-          <p>{EVENT.leadOffer} — and the whole festival edit, on the tables.</p>
+          <p>{EVENT.leadOffer} — and the whole dazzling edit, on the tables.</p>
           <div className={styles.heroActions}>
             <button className={styles.primary} type="button" onClick={openOffer}>Reserve your visit</button>
             <a className={styles.ghost} href="#visit">Plan your visit</a>

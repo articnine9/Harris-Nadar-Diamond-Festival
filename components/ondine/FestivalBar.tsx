@@ -22,7 +22,7 @@ export function FestivalBar() {
           <FestivalCountdown variant="bar" compact />
         </span>
         <button className={styles.festivalBarCta} type="button" onClick={openOffer}>
-          Book a slot
+          Book Fest Visit
         </button>
       </div>
     </div>

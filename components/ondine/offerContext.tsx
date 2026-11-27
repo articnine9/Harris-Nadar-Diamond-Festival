@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useRef, type ReactNode, type RefObject } from "react";
+import { useEnquiry } from "./Enquiry";
 
 type OfferCtx = {
   openOffer: () => void;
@@ -16,15 +17,15 @@ export function useOffer() {
 }
 
 /**
- * Holds the festival-invitation dialog. Any "Reserve" button calls
- * `openOffer()`; the dialog itself lives in <OfferPopup />.
+ * Holds the initial festival-invitation dialog (`dialogRef`).
+ * Button clicks calling `openOffer()` open the full booking/enquiry dialog.
  */
 export function OfferProvider({ children }: { children: ReactNode }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { open } = useEnquiry();
   const openOffer = useCallback(() => {
-    const d = dialogRef.current;
-    if (d && !d.open) d.showModal();
-  }, []);
+    open();
+  }, [open]);
 
   return <Ctx.Provider value={{ openOffer, dialogRef }}>{children}</Ctx.Provider>;
 }

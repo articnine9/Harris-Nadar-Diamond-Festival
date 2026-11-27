@@ -85,13 +85,14 @@ export function CountdownBand() {
     <section className={styles.countdownBand} aria-label="Festival countdown">
       <div className={`${styles.wrap} ${styles.countdownInner}`}>
         <div className={styles.countdownCopy}>
-          <span className={styles.eyebrow}>{EVENT.name}</span>
+          <span className={styles.eyebrow}>{EVENT.name} {EVENT.year}</span>
           <h2>{heading}</h2>
           <p>
             {EVENT.dateLabel} · {EVENT.hours}
           </p>
           <p className={styles.countdownCap}>
             Only {EVENT.dailyCap} showroom visits a day — reserve a slot before you travel.
+            {" "}{EVENT.sundays}.
           </p>
           {state === "ended" ? (
             EVENT.phoneHref ? (

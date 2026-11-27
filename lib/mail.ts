@@ -37,16 +37,17 @@ const prettyDate = (iso: string) => {
 export async function sendEnquiryMail(e: EnquiryMail) {
   const isOffer = e.type === "offer";
   const subject = oneLine(isOffer
-    ? `Festival offer: ${e.name} · visit ${prettyDate(e.visitDate)}, ${e.visitTime}`
+    ? `Festival offer: ${e.phone}${e.email ? ` · ${e.email}` : ""}`
     : `Enquiry: ${e.piece} · ${e.name}`);
 
   const rows: [string, string][] = [
-    ["Name", e.name],
+    ...(e.name ? [["Name", e.name] as [string, string]] : []),
     ["Mobile", e.phone],
     ...(e.email ? [["Email", e.email] as [string, string]] : []),
-    ...(isOffer
-      ? [["Visit date", prettyDate(e.visitDate)], ["Visit time", e.visitTime], ["Interested in", e.interests.join(", ") || "Not specified"]] as [string, string][]
-      : [["Piece", e.piece]] as [string, string][]),
+    ...(!isOffer ? [["Piece", e.piece] as [string, string]] : []),
+    ...(e.visitDate ? [["Visit date", prettyDate(e.visitDate)] as [string, string]] : []),
+    ...(e.visitTime ? [["Visit time", e.visitTime] as [string, string]] : []),
+    ...(e.interests.length ? [["Interested in", e.interests.join(", ")] as [string, string]] : []),
     ...(e.message ? [["Message", e.message] as [string, string]] : []),
     ["Received", new Date(e.receivedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST"],
   ];

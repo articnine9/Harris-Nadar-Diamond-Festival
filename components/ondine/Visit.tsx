@@ -14,10 +14,10 @@ export function Visit() {
         <div className={styles.visitIntro}>
           <span className={styles.eyebrow}>Plan your visit</span>
           <h2>
-            Nine days. One showroom. <i>Come and see it.</i>
+            Eight days. One showroom. <i>Come and see it.</i>
           </h2>
           <p>
-            The whole festival edit will be on the tables — including pieces that never make
+            The whole dazzling edit will be on the tables — including pieces that never make
             it online. Reserve a slot and a consultant will have the pieces ready when you
             arrive.
           </p>
@@ -39,6 +39,7 @@ export function Visit() {
             <dd>
               {EVENT.dateLabel}
               <small>{EVENT.hours}</small>
+              <small className={styles.visitSundays}>{EVENT.sundays}</small>
             </dd>
           </div>
           <div>
@@ -53,9 +54,9 @@ export function Visit() {
               <dt>Talk to us</dt>
               <dd>
                 {EVENT.phone && <a href={EVENT.phoneHref}>{EVENT.phone}</a>}
-                {EVENT.landline && (
+                {EVENT.mobile && (
                   <small>
-                    Showroom: <a href={EVENT.landlineHref}>{EVENT.landline}</a>
+                    Mobile: <a href={EVENT.mobileHref}>{EVENT.mobile}</a>
                   </small>
                 )}
                 {EVENT.whatsappHref && (

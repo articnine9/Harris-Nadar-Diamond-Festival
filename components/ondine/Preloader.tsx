@@ -37,7 +37,7 @@ export function Preloader({ loaded, imagesLoaded, total, failed, done, unit }: P
 
   return (
     <div className={`${styles.loader} ${done ? styles.loaderDone : ""}`} aria-busy={!done} role="progressbar"
-      aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Loading the Diamond Festival">
+      aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Loading the Dazzling Diamond Fest">
       <div className={styles.loaderInner}>
         {/* eslint-disable-next-line @next/next/no-img-element -- plain img so it paints before hydration */}
         <img className={styles.loaderLogo} src="/logo-light.png" alt="D. Harris Nadar Diamonds & Jewellery" width={1368} height={229} />

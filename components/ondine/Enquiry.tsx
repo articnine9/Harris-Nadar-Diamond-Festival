@@ -1,11 +1,19 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type FormEvent, type ReactNode, type RefObject } from "react";
+import { EVENT } from "@/lib/ondine/event";
 import { PRODUCTS } from "@/lib/ondine/products";
 import styles from "./Ondine.module.css";
 
 const GENERAL = "General enquiry";
 const pieceName = (p: (typeof PRODUCTS)[number]) => `${p.name} ${p.accent}`;
+const INTERESTS = ["Minimals", "Bridal Collection", "Customization", "Solitaire Diamonds"];
+const SLOTS = ["10:00 AM - 12:00 PM", "12:00 PM - 02:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM"];
+
+const today = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
 
 type Enquiry = { open: (piece?: string) => void };
 const EnquiryCtx = createContext<Enquiry | null>(null);
@@ -49,18 +57,29 @@ export function EnquiryProvider({ children }: { children: ReactNode }) {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    const fd = new FormData(form);
+    const payload = {
+      type: "enquiry",
+      piece: String(fd.get("piece") ?? ""),
+      name: String(fd.get("name") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      visitDate: String(fd.get("visitDate") ?? ""),
+      visitTime: String(fd.get("visitTime") ?? ""),
+      interests: fd.getAll("interests").map(String),
+      message: String(fd.get("message") ?? ""),
+    };
     setStatus({ kind: "sending" });
     try {
       const res = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || "Could not send your enquiry. Please try again.");
       form.reset();
-      setStatus({ kind: "sent", name: data.name.split(" ")[0] });
+      setStatus({ kind: "sent", name: payload.name.split(" ")[0] });
     } catch (err) {
       setStatus({ kind: "error", message: err instanceof Error ? err.message : "Could not send your enquiry. Please try again." });
     }
@@ -114,9 +133,36 @@ export function EnquiryProvider({ children }: { children: ReactNode }) {
               </div>
 
               <label className={styles.field}>
-                <span>Email <em>(optional)</em></span>
-                <input id="enquiry-email" name="email" type="email" autoComplete="email" maxLength={120} />
+                <span>Email</span>
+                <input id="enquiry-email" name="email" type="email" required autoComplete="email" maxLength={120} />
               </label>
+
+              <div className={styles.fieldRow}>
+                <label className={styles.field}>
+                  <span>Visit date</span>
+                  <input id="enquiry-date" name="visitDate" type="date" required min={today()} max={EVENT.endAt.slice(0, 10)} />
+                </label>
+                <label className={styles.field}>
+                  <span>Visit time</span>
+                  <select id="enquiry-time" name="visitTime" required defaultValue="">
+                    <option value="" disabled>Select Time *</option>
+                    {SLOTS.map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              <fieldset className={styles.enquiryChecks}>
+                <legend className={styles.srOnly}>Interested in</legend>
+                <span className={styles.enquiryChecksLabel}>Interested in</span>
+                <div className={styles.enquiryChecksGrid}>
+                  {INTERESTS.map((label, i) => (
+                    <label key={label}>
+                      <input type="checkbox" id={`enquiry-interest-${i}`} name="interests" value={label} />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
 
               <label className={styles.field}>
                 <span>Message <em>(optional)</em></span>

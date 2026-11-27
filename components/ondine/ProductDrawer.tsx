@@ -32,7 +32,7 @@ export function ProductDrawer({ product: p, index, total, shot, ref }: Props) {
       <div className={styles.drawerInner}>
         <div className={styles.drawerMeta}>
           <span>N°{pad(index + 1)} / {pad(total)}</span>
-          <span>Diamond Festival</span>
+          <span>{EVENT.name} {EVENT.year}</span>
         </div>
 
         <div className={styles.drawerHead}>
@@ -73,7 +73,7 @@ export function ProductDrawer({ product: p, index, total, shot, ref }: Props) {
 
         <div className={styles.drawerBuy}>
           <button className={styles.pill} type="button" onClick={() => open(`${p.name} ${p.accent}`)}>
-            Reserve this piece
+            Explore {p.name}
           </button>
           <span className={styles.drawerNote}>Price on request · private viewing by appointment</span>
         </div>

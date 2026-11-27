@@ -67,12 +67,20 @@ export default function Ondine({ photos, frames }: Props) {
           <div className={`${styles.wrap} ${styles.footerWrap}`}>
             <div className={styles.footerBrand}>
               <Image className={styles.footerLogo} src="/logo-light.png" alt="D. Harris Nadar Diamonds & Jewellery" width={1368} height={229} />
-              <span>{EVENT.dateLabel} · {EVENT.hours}</span>
-              <span>{EVENT.address ? `${EVENT.venue} · ${EVENT.address}` : EVENT.venue}</span>
+              <span className={styles.footerFest}>{EVENT.name} {EVENT.year}</span>
+              <span className={styles.footerTagline}>{EVENT.tagline}</span>
             </div>
-            <div className={styles.hall}>
-              <span>{EVENT.leadOffer}</span>
-              <span>BIS Hallmark · 750 / 950 · GIA certified</span>
+            <div className={styles.footerContact}>
+              <span>{EVENT.dateLabel} · {EVENT.sundays}</span>
+              <span>{EVENT.address}</span>
+              <a href={EVENT.phoneHref}>{EVENT.phone}</a>
+            </div>
+            <div className={styles.footerSocial}>
+              {EVENT.socials.map((social) => (
+                <a key={social.href} href={social.href} target="_blank" rel="noreferrer">
+                  {social.label}
+                </a>
+              ))}
             </div>
           </div>
         </footer>

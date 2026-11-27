@@ -9,15 +9,14 @@ import type { PhotoSet } from "./types";
  */
 export const PHOTOS: PhotoSet = {
   wide: {
-    src: "/photos/festival-01.webp",
-    subject: { x: 0.5, y: 0.45 },
+    src: "/photos/banner-wide.webp",
+    subject: { x: 0.56, y: 0.45 },
     frameX: 0.5,
-    // 4:3 photo: desktop screens trim top and bottom; keep the face, earring and necklace in view.
-    frameY: 0.45,
+    frameY: 0.5,
     points: [
-      { x: 0.624, y: 0.473 }, // drop earring
-      { x: 0.5, y: 0.858 }, // necklace ruby
-      { x: 0.687, y: 0.836 }, // ring
+      { x: 0.62, y: 0.42 }, // Minimals: drop earring & stud detail
+      { x: 0.57, y: 0.66 }, // Bridal collection: layered diamond necklace
+      { x: 0.41, y: 0.82 }, // Customization: bespoke haath phool & handcraft
     ],
   },
   closeups: [

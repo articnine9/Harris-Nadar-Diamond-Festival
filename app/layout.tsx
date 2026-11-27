@@ -1,26 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { Jost, Style_Script, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { EVENT } from "@/lib/ondine/event";
 import "./globals.css";
 
-const display = Bodoni_Moda({ subsets: ["latin"], style: ["normal", "italic"], weight: ["400", "500"], variable: "--font-display", display: "swap" });
-const body = Hanken_Grotesk({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-body", display: "swap" });
+const display = localFont({ src: "./fonts/AriensNobela.otf", variable: "--font-display", display: "swap" });
+const script = Style_Script({ subsets: ["latin"], weight: "400", variable: "--font-script", display: "swap" });
+const body = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-body", display: "swap" });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: `${EVENT.name} ${EVENT.dateLabel} | D. Harris Nadar Diamonds & Jewellery`,
-  description: `${EVENT.dateLabel}: ${EVENT.leadOffer}, free certification and private bridal consultations at the showroom.`,
+  title: `${EVENT.name} ${EVENT.year} · ${EVENT.dateLabel} | D. Harris Nadar Diamonds & Jewellery`,
+  description: `${EVENT.dateLabel}: ${EVENT.leadOffer}. ${EVENT.tagline}. Reserve a showroom visit at ${EVENT.venue}, Nagercoil.`,
 };
 
 export const viewport: Viewport = {
-  themeColor: "#060c11",
+  themeColor: "#221a52",
   colorScheme: "dark",
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${script.variable} ${body.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

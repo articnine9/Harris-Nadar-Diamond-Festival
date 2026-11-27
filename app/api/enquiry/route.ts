@@ -31,15 +31,12 @@ export async function POST(req: Request) {
     receivedAt: new Date().toISOString(),
   };
 
-  if (!enquiry.name) return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
+  if (!isOffer && !enquiry.name) return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
   if (enquiry.phone.replace(/\D/g, "").length < 10) {
     return NextResponse.json({ error: "Please enter a 10-digit mobile number." }, { status: 400 });
   }
-  if (isOffer && !/^\d{4}-\d{2}-\d{2}$/.test(enquiry.visitDate)) {
-    return NextResponse.json({ error: "Please choose a visit date." }, { status: 400 });
-  }
-  if (isOffer && !enquiry.visitTime) {
-    return NextResponse.json({ error: "Please choose a visit time." }, { status: 400 });
+  if (isOffer && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(enquiry.email)) {
+    return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
   console.log("[enquiry]", JSON.stringify(enquiry));

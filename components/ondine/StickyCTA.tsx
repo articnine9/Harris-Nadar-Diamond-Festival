@@ -11,10 +11,10 @@ export function StickyCTA() {
   return (
     <div className={styles.stickyCta} role="region" aria-label="Book a festival visit">
       <span>
-        {EVENT.shortDate} · {EVENT.offerShort}
+        {EVENT.shortDate} · Up to 30% off gold
       </span>
       <button className={styles.primary} type="button" onClick={openOffer}>
-        Book a slot
+        Book Fest Visit
       </button>
     </div>
   );
